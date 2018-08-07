@@ -1,0 +1,11 @@
+body {
+     padding: 0;
+     margin: 0;
+}
+ html,body, #map {
+     height: 100%;
+     font: Helvetica, Arial,  sans-serif;
+     font-size: 1.5vh;
+     font-family: Helvetica, Arial, sans-serif;
+     line-height: 150%;
+}

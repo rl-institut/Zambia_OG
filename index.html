@@ -1,0 +1,71 @@
+<!Doctype html>
+<html>
+	<head>
+		<title>SimpleLeafletMap</title>
+	
+		<link rel="stylesheet" href="css/leaflet.css"/>
+		<link rel="stylesheet" href="css/styles.css"/>
+	</head>
+
+
+	<body>
+		<div id="map"></div>
+		
+		
+		<script src="javascript/leaflet.js"></script>
+
+
+		<script>
+			let options = {
+				center: [-13.22, 27.85],
+				zoom: 6,
+				minZoom: 6,
+				maxZoom: 16,
+				zoomControl: false,
+				maxBounds: [[-20, 19],[-8, 32]]
+			}
+			
+			// Create empty leaflet-map (named "map") on canvas with parameters defined in options
+			let map = L.map("map", options);
+
+
+
+			//
+			// define tilelayers which can be bound to map
+			//
+
+
+			let osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+			maxZoom: 19,
+			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+			}).addTo(map);
+
+
+			let gray = L.tileLayer("https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png", {
+			maxZoom: 19,
+			attribution: '&copy; <a href="http://www.wfmlabs.org">wfmlabs</a>'
+			}).addTo(map);
+
+
+
+			//
+			// name set of tilelayers and adds them to the layer-selector
+			//
+
+			let baseMaps = {
+				"OpenStreetMap": osm,
+				"Graycale": gray
+			};
+
+			L.control.layers(baseMaps).addTo(map);
+
+
+		</script>
+	
+		
+	</body>
+
+</html>
+
+
+
