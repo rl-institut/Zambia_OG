@@ -1,17 +1,23 @@
 <!Doctype html>
 <html>
 	<head>
+		<meta charset=utf-8 />
 		<title>SimpleLeafletMap</title>
-	
-		<link rel="stylesheet" href="css/leaflet.css"/>
+		
+		<!-- Stylesheet defines map extent -->
 		<link rel="stylesheet" href="css/styles.css"/>
+		<!-- Stylesheet for Leaflet icons, fonts etc -->
+		<link rel="stylesheet" href="css/leaflet.css"/>
 	</head>
 
 
 	<body>
 		<div id="map"></div>
 		
+		<!--Ajax - in this map enables loading a GeoJson from a file directly into Leaflet -->
+		<script src="javascript/jquery.min.js"></script>
 		
+		<!--Leaflet - JS-library for slippy maps -->		
 		<script src="javascript/leaflet.js"></script>
 
 
@@ -24,40 +30,61 @@
 				zoomControl: false,
 				maxBounds: [[-20, 19],[-8, 32]]
 			}
-			
+
+			//
 			// Create empty leaflet-map (named "map") on canvas with parameters defined in options
+			//
+
 			let map = L.map("map", options);
 
 
 
 			//
-			// define tilelayers which can be bound to map
+			// Definition of Basemap-Tile Sources to add map 
 			//
 
+
+			
+			let gray = L.tileLayer("https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png", {
+			maxZoom: 19,
+			attribution: '&copy; <a href="http://www.wfmlabs.org">wfmlabs</a>'
+			});
 
 			let osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 			maxZoom: 19,
 			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-			}).addTo(map);
+			});
+
+        		let topo = L.tileLayer("http://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
+        		maxZoom: 19,
+        		attribution: '&copy; <a href="https://opentopomap.org">OpenTopoMap</a>'
+			}).addTo(map);   // .addTo(map) loads this as the initial basemap			
 
 
-			let gray = L.tileLayer("https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png", {
-			maxZoom: 19,
-			attribution: '&copy; <a href="http://www.wfmlabs.org">wfmlabs</a>'
-			}).addTo(map);
-
-
-
-			//
 			// name set of tilelayers and adds them to the layer-selector
-			//
-
 			let baseMaps = {
+				"Graycale": gray,
 				"OpenStreetMap": osm,
-				"Graycale": gray
+				"OpenTopoMap": topo
 			};
 
 			L.control.layers(baseMaps).addTo(map);
+
+
+			// loading a GeoJSON file. Here sample Post-office-data from OpenStreetMap 
+			$.getJSON("data/sampledata_postoffices.geojson",function(data){
+			// L.geoJson function is used to parse the geojson file and load it onto the map
+			var datalayer = L.geoJson(data ,{
+				//popups and their content are defined here
+				onEachFeature: function(feature, featureLayer) {
+				featureLayer.bindPopup(feature.properties.name);
+				}
+			}).addTo(map);
+			//the following command centers and zooms the map to the bounds of datalayer
+			//map.fitBounds(datalayer.getBounds());
+			});
+
+
 
 
 		</script>
