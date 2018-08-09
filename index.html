@@ -14,7 +14,7 @@
 	<body>
 		<div id="map"></div>
 		
-		<!--Ajax - in this map enables loading a GeoJson from a file directly into Leaflet -->
+		<!--jquery - enables loading a GeoJson from a file directly into Leaflet -->
 		<script src="javascript/jquery.min.js"></script>
 		
 		<!--Leaflet - JS-library for slippy maps -->		
@@ -68,7 +68,6 @@
 				"OpenTopoMap": topo
 			};
 
-			L.control.layers(baseMaps).addTo(map);
 
 
 			// loading a GeoJSON file. Here sample Post-office-data from OpenStreetMap 
@@ -80,12 +79,12 @@
 				featureLayer.bindPopup(feature.properties.name);
 				}
 			}).addTo(map);
-			//the following command centers and zooms the map to the bounds of datalayer
+			// command centers and zooms the map to the bounds of datalayer
 			//map.fitBounds(datalayer.getBounds());
 			});
 
 
-
+			L.control.layers(baseMaps).addTo(map);
 
 		</script>
 	
