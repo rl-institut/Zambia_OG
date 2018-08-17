@@ -48,8 +48,8 @@
 
 			//
 			// Definition of Basemap-Tile Sources to add map 
+			// find more basemaps here (please inspect licenses): https://mc.bbbike.org/mc/?num=2&mt0=mapnik&mt1=mapnik-bw
 			//
-
 
 			
 			let gray = L.tileLayer("https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png", {
@@ -118,14 +118,14 @@
 						layer.bindPopup(popupContent);
 					}
 
-			
+
 
 			//select datasources and apply style
 			let circles = L.geoJSON([postoffices], {
 				style: function (feature) {
 					return feature.properties && feature.properties.style;
 				},
-				// uncomment here to allow popups for this layer
+				// uncomment below to allow popups for this layer
 				 onEachFeature: onEachFeature,
 		
 				pointToLayer: function (feature, latlng) {
@@ -153,10 +153,13 @@
 					};
 				},
 
+			}).addTo(map);
+
+			// zooms to extent of clicked region
+			// assumes that borders are a path or polygon, not a point
+			borders.on("click", function (event) {
+			    map.fitBounds(event.layer.getBounds());
 			});
-
-
-
 
 			// define and include overlaymaps
 			let overlaymaps = {
@@ -166,6 +169,7 @@
 
 			L.control.layers(baseMaps, overlaymaps).addTo(map);
 			
+
 			
 
 		</script>
