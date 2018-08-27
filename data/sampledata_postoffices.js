@@ -40,7 +40,7 @@ var postoffices = {
 },"geometry": {"type": "Point","coordinates": [28.2822838,-15.4165937]
 },"id": "node/1109182588"
 },
-{"type": "Feature","properties": {"@id": "node/1324201219","amenity": "post_office"
+{"type": "Feature","properties": {"@id": "node/1324201219","amenity": "post_office","name": "Post Office"
 },"geometry": {"type": "Point","coordinates": [28.3552733,-15.4362882]
 },"id": "node/1324201219"
 },
