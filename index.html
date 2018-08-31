@@ -52,7 +52,7 @@
             <ul role="tablist">
                 <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
                 <li><a href="#bert" role="tab"><i class="fa fa-key"></i></a></li>
-                <li><a href=#data-sources role="tab"><i class="fa fa-layer-group"></i></a></li>
+                <li><a href=#layers role="tab"><i class="fa fa-layer-group"></i></a></li>
                 <li><a href="#settings" role="tab"><i class="fa fa-filter"></i></a></li>
                 <li><a href="#download" role="tab"><i class="fa fa-arrow-circle-down"></i></a></li>                
                 <li><a href="#about" role="tab"><i class="fa fa-question-circle"></i></a></li>
@@ -72,12 +72,24 @@
             </div>
 
 
-            <div class="leaflet-sidebar-pane" id="data-sources">
+            <div class="leaflet-sidebar-pane" id="layers">
                 <h1 class="leaflet-sidebar-header">I'm the Layer Menu's Headline<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-                <p><h3>html headline is here</h3>
-				You're probably getting the gist of this by now. 
+                <h3>html h3 headline </h3>
+				<p> paragraph in new line </p>
+                <h3>Radio Buttons </h3>
+                <form action="">
+                  <input type="radio" name="basemap" id="Aerial" onclick="BaseMapSwitch()"> Aerial Images (Esri)<br>
+                  <input type="radio" name="basemap" id="OSM" onclick="BaseMapSwitch()"> OpenStreetMap<br>
+                  <input type="radio" name="basemap" id="OSM-Gray" onclick="BaseMapSwitch()"> OpenStreetMap-Gray<br>
+                  <input type="radio" name="basemap" id="OpenTopo" onclick="BaseMapSwitch()"> OpenTopoMap<br>
+                </form>
             </div>
-
+                <script>
+                function BaseMapSwitch() {
+                    var x = document.getElementsByName("basemap");
+                    alert(x[0].id);
+                }
+                </script>
 
             <div class="leaflet-sidebar-pane" id="settings">
                 <h1 class="leaflet-sidebar-header">What a nice Filter Symbol<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
@@ -96,9 +108,12 @@
                 function toggleVecTileLayer()
                 {
                   var checkbox = document.getElementById('toggle_vl');
-                  if (checkbox.checked == false && map.hasLayer(vecTileLayer))
+                  if (checkbox.checked == false)
                       {
-                        map.removeLayer(vecTileLayer);
+                        if (map.hasLayer(vecTileLayer))
+                            {
+                            map.removeLayer(vecTileLayer);
+                            }
                       }
                   else
                       {
@@ -181,7 +196,7 @@
 			});
 
             let aerial = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-                maxZoom: 18,
+                maxZoom: 19,
                 attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
             });	
 
