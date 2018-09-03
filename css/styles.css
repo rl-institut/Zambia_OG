@@ -57,3 +57,8 @@ body {
      -ms-transform: translateX(26px);
      transform: translateX(26px);
 }
+.basemap_preview{
+    width:128px;
+    height:128px;
+    border-width:0; 
+}

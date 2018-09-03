@@ -76,6 +76,35 @@
                 <h1 class="leaflet-sidebar-header">Layers<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
 
                 <h3>Select Basemap Layer </h3>
+                <img class="basemap_preview" id="aerial_preview" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/1/1/1.png" />
+                <img class="basemap_preview" id="gray_preview" src="https://tiles.wmflabs.org/bw-mapnik/1/1/1.png" />
+                <img class="basemap_preview" id="osm_preview" src="https://a.tile.openstreetmap.org/1/1/1.png" />
+                <img class="basemap_preview" id="topo_preview" src="https://a.tile.opentopomap.org/1/1/1.png"/>
+                </p>
+
+
+                <script>
+                function url_from_coords(zoom, coords) {
+                   xtile = long2tile(coords.lng,zoom);
+                   ytile = long2tile(coords.lat * -1,zoom);
+                   return zoom + "/" + xtile + "/" + ytile;
+                }
+
+                function long2tile(lon,zoom) { return (Math.floor((lon+180)/360*Math.pow(2,zoom))); }
+                function lat2tile(lat,zoom)  { return (Math.floor((1-Math.log(Math.tan(lat*Math.PI/180) + 1/Math.cos(lat*Math.PI/180))/Math.PI)/2 *Math.pow(2,zoom))); }
+
+
+                function RefreshPreview(){
+                    document.getElementById("topo_preview").src="https://a.tile.opentopomap.org/" + url_from_coords(map.getZoom(), map.getCenter()) + ".png"
+                    document.getElementById("gray_preview").src="https://tiles.wmflabs.org/bw-mapnik/" + url_from_coords(map.getZoom(), map.getCenter()) + ".png"
+                    document.getElementById("osm_preview").src="https://a.tile.openstreetmap.org/" + url_from_coords(map.getZoom(), map.getCenter()) + ".png"
+                    document.getElementById("aerial_preview").src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/" + url_from_coords(map.getZoom(), map.getCenter()) + ".png"
+                    }
+    
+
+                </script>
+
+
                 <form action="">
                   <input type="radio" name="basemap" id="Esri Aerial" onclick="BaseMapSwitch()" checked> Aerial Images (Esri)<br>
                   <input type="radio" name="basemap" id="OpenStreetMap" onclick="BaseMapSwitch()" > OpenStreetMap<br>
@@ -141,7 +170,7 @@
 
 
                 <script>
-                function toggleBorders(argumento){
+                function toggleBorders(){
                     var checkboxes = document.getElementsByName('togglebutton');
                     var j;
                     for (j = 0; j < checkboxes.length; j++) {
@@ -209,7 +238,7 @@
 				minZoom: 6,
 				maxZoom: 16,
 				zoomControl: false,
-				maxBounds: [[-24, 7],[-2, 48]]
+				//maxBounds: [[-24, 7],[-2, 48]]
 			}
 
 			//
@@ -388,8 +417,6 @@
 				"Borders": borders,
                 "Clusters": vecTileLayer,
 			};
-			L.control.layers(baseMaps, overlaymaps).addTo(map);
-
 
 
         L.control.scale({
@@ -401,6 +428,13 @@
             BaseMapSwitch();
             toggleVecTileLayer();
             toggleBorders();
+
+            map.on('zoomend', function() {
+                RefreshPreview();
+            });
+            map.on('moveend', function() {
+                RefreshPreview();
+            });
 
 		</script>
 	
