@@ -73,35 +73,39 @@
 
 
             <div class="leaflet-sidebar-pane" id="layers">
-                <h1 class="leaflet-sidebar-header">I'm the Layer Menu's Headline<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-                <h3>html h3 headline </h3>
-				<p> paragraph in new line </p>
-                <h3>Radio Buttons </h3>
+                <h1 class="leaflet-sidebar-header">Layers<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+
+                <h3>Select Basemap Layer </h3>
                 <form action="">
-                  <input type="radio" name="basemap" id="Aerial" onclick="BaseMapSwitch()"> Aerial Images (Esri)<br>
-                  <input type="radio" name="basemap" id="OSM" onclick="BaseMapSwitch()"> OpenStreetMap<br>
-                  <input type="radio" name="basemap" id="OSM-Gray" onclick="BaseMapSwitch()"> OpenStreetMap-Gray<br>
-                  <input type="radio" name="basemap" id="OpenTopo" onclick="BaseMapSwitch()"> OpenTopoMap<br>
+                  <input type="radio" name="basemap" id="Esri Aerial" onclick="BaseMapSwitch()" checked> Aerial Images (Esri)<br>
+                  <input type="radio" name="basemap" id="OpenStreetMap" onclick="BaseMapSwitch()" > OpenStreetMap<br>
+                  <input type="radio" name="basemap" id="Grayscale" onclick="BaseMapSwitch()" > OpenStreetMap-Gray<br>
+                  <input type="radio" name="basemap" id="OpenTopoMap" onclick="BaseMapSwitch()" > OpenTopoMap<br>
                 </form>
-            </div>
+
                 <script>
                 function BaseMapSwitch() {
                     var x = document.getElementsByName("basemap");
-                    alert(x[0].id);
+                    var i;
+                    for (i = 0; i < x.length; i++) {
+                        if (x[i].checked){
+                            //alert(typeof(gray));
+                            map.addLayer(baseMaps[x[i].id]);
+                        }
+                        else {
+                            map.removeLayer(baseMaps[x[i].id]);
+                        }    
+                        
+                    }
                 }
                 </script>
 
-            <div class="leaflet-sidebar-pane" id="settings">
-                <h1 class="leaflet-sidebar-header">What a nice Filter Symbol<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-                 <h3>headdy McHeadline</h3> Paragraphy McParagraph.<br>
-             
-                    <h3>Checkboxes</h3>
+                <h3>Select Overlay Information </h3>
                 <br>
-                 Clusters
-                 <label class="switch" Show Clusters> 
+                 <label class="switch"> 
                     <input checked type="checkbox" onclick="toggleVecTileLayer()" id="toggle_vl"/>
                     <span class="slider"></span>
-                </label>
+                </label> Show Clusters
 
                 <script>
 
@@ -120,8 +124,50 @@
                         map.addLayer(vecTileLayer);
                       }
                 }
+                </script>
+                <br>
+                <br>
+                 <label class="switch"> 
+                    <input checked type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Borders"/>
+                    <span class="slider"></span>
+                </label> Show Borders
+
+                <br>
+                <br>
+                 <label class="switch"> 
+                    <input type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Postoffices"/>
+                    <span class="slider"></span>
+                </label> Show Postoffices
+
+
+                <script>
+                function toggleBorders(argumento){
+                    var checkboxes = document.getElementsByName('togglebutton');
+                    var j;
+                    for (j = 0; j < checkboxes.length; j++) {
+                        //alert(typeof(checkboxes[j].id));
+                        if (checkboxes[j].checked == false)
+                        {
+                            //alert(typeof(gray));
+                            map.removeLayer(overlaymaps[checkboxes[j].id]);
+                        }
+                        else {
+                            map.addLayer(overlaymaps[checkboxes[j].id]);
+                        }   
+                    }
+                }
+                
 
                 </script>
+            </div>
+
+
+
+            <div class="leaflet-sidebar-pane" id="settings">
+                <h1 class="leaflet-sidebar-header">What a nice Filter Symbol<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+                 <h3>headdy McHeadline</h3> Paragraphy McParagraph.<br>
+             
+
             </div>
   
             <div class="leaflet-sidebar-pane" id="about">
@@ -183,7 +229,7 @@
 			let gray = L.tileLayer("https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png", {
 			    maxZoom: 19,
 			    attribution: '&copy; <a href="http://www.wfmlabs.org">wfmlabs</a>'
-			}).addTo(map);   // .addTo(map) loads this as the initial basemap	;
+			});   // .addTo(map) loads this as the initial basemap	;
 
 			let osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 			    maxZoom: 19,
@@ -202,13 +248,6 @@
 
 
 			// name set of tilelayers and adds them to the layer-selector
-			let baseMaps = {
-                "Esri Aerial": aerial,
-				"Grayscale": gray,
-				"OpenStreetMap": osm,
-				"OpenTopoMap": topo,
-			};
-
 
 			/*
 
@@ -334,6 +373,14 @@
 
         map.addControl(sidebar);
 
+			let baseMaps = {
+                "Esri Aerial": aerial,
+				"Grayscale": gray,
+				"OpenStreetMap": osm,
+				"OpenTopoMap": topo,
+			};
+
+
 
 			// define and include overlaymaps
 			let overlaymaps = {
@@ -350,6 +397,10 @@
         }).addTo(map);
 
             map.on("layeradd",function (){vecTileLayer.bringToFront();});
+
+            BaseMapSwitch();
+            toggleVecTileLayer();
+            toggleBorders();
 
 		</script>
 	
