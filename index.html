@@ -479,11 +479,11 @@
 
         var highlightStyle = {
             fillColor: "#0044ff",
-            fillOpacity: 0.5,
+            fillOpacity: 0.8,
             stroke: true,
             fill: true,
             color: "#0044ff",
-            opacity: 0.5,
+            opacity: 0.8,
             weight: 2
         };
 
@@ -500,8 +500,8 @@
                             return {
                                 fill: true,
                                 fillColor: amountcolor,
-                                fillOpacity: 0.5,
-                                color: "blue",
+                                fillOpacity: 0.8,
+                                color: "yellow",
                                 weight: 1
                             };
                         },
@@ -611,17 +611,14 @@
 
 			// define and include overlaymaps
 			let overlaymaps = {
+                "Clusters": vecTileLayer,
 				"Postoffices": circles,
 				"Borders": borders,
-                "Clusters": vecTileLayer,
 			};
 
         L.control.scale({
             position: "bottomright"
         }).addTo(map);
-
-            map.on("layeradd",function (){vecTileLayer.bringToFront();});
-
 
             toggleVecTileLayer();
             toggleBorders();
@@ -632,6 +629,11 @@
             map.on('moveend', function() {
                 RefreshPreview();
             });
+
+            map.on("layeradd",function (){vecTileLayer.bringToFront();});
+
+
+
 
 		</script>
 	
