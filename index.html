@@ -182,7 +182,7 @@
                 <br>
                 <br>
                  <label class="switch"> 
-                    <input checked type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Borders"/>
+                    <input type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Borders"/>
                     <span class="slider"></span>
                 </label> Show Borders
 
@@ -466,7 +466,7 @@
 					};
 				},
 
-			}).addTo(map);
+			});
 
 			// zooms to extent of clicked region
 			// assumes that borders are a path or polygon, not a point
@@ -479,11 +479,11 @@
 
         var highlightStyle = {
             fillColor: "#0044ff",
-            fillOpacity: 0.8,
+            fillOpacity: 0.5,
             stroke: true,
             fill: true,
             color: "#0044ff",
-            opacity: 0.8,
+            opacity: 0.5,
             weight: 2
         };
 
@@ -491,7 +491,7 @@
             let vecTileLayer = L.vectorGrid.protobuf("data/temporary_tiles/{z}/{x}/{y}.pbf", {
                     rendererFactory: L.canvas.tile,
                     vectorTileLayerStyles: {
-                        cluster: function(prop, zoom) {
+                        clusterz: function(prop, zoom) {
                             if (prop.building < 250) {
                                 amountcolor = "red";
                             } else {
@@ -500,7 +500,7 @@
                             return {
                                 fill: true,
                                 fillColor: amountcolor,
-                                fillOpacity: 0.8,
+                                fillOpacity: 0.5,
                                 color: "yellow",
                                 weight: 1
                             };
@@ -530,9 +530,11 @@
                     var popup='\
                     <table>\
                       <tr><td align="right"><b>ID</b>:</td><td>'+properties.ID+'</td></tr>\
+                      <tr><td align="right"><b>Province</b>:</td><td>'+properties.NAME_1+'</td></tr>\
                       <tr><td align="right"><b>Buildings</b>:</td><td>'+properties.building+'</td></tr>\
                       <tr><td align="right"><b>Area</b>:</td><td>'+properties.area_km2 + ' km²' + '</td></tr>\
-                      <tr><td align="right"><b>Density</b>:</td><td>'+properties.density+'</td></tr>\
+                      <tr><td align="right"><b>Density</b>:</td><td>'+properties.buid_dens+'</td></tr>\
+                      <tr><td align="right"><b>Distance to Grid</b>:</td><td>'+properties.distance+'</td></tr>\
                       <tr><td align="right"><b>Priority Class</b>:</td><td>'+properties.prio_class+'</td></tr>';
 
                     popup=popup+'\
@@ -621,7 +623,7 @@
         }).addTo(map);
 
             toggleVecTileLayer();
-            toggleBorders();
+            //toggleBorders();
 
             map.on('zoomend', function() {
                 RefreshPreview();
