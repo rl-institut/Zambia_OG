@@ -474,6 +474,18 @@
 			//    map.fitBounds(event.layer.getBounds());
 			//});
 
+        var color_cluster_with_few_buildings = "lightgray"
+        var color_cluster_with_many_buildings = "red"
+
+        var highlightStyle = {
+            fillColor: "#0044ff",
+            fillOpacity: 0.5,
+            stroke: true,
+            fill: true,
+            color: "#0044ff",
+            opacity: 0.5,
+            weight: 2
+        };
 
 
             let vecTileLayer = L.vectorGrid.protobuf("data/temporary_tiles/{z}/{x}/{y}.pbf", {
@@ -496,10 +508,85 @@
                     },
                     maxZoom: 15,
                     minZoom: 5,
-                })
+                    interactive: true,
+                getFeatureId: function(f) {
+                    if (f.properties.ID !== undefined) {
+                        return f.properties.ID;
+                    }
+                    if (f.properties.type !== undefined) {
+                        return "g" + f.properties.ID;
+                    }
+                    return "r" + f.properties.OBJECTID;
+                }
+            })
+            .on("click", function(e) {
+                this.clearHighlight();
+                let properties = e.layer.properties;
+                if (properties.ID !== undefined) {
+                    var type = "c";
+                    var ID = properties.ID;
+                    let public=["School","Healthcare","Water Point","Public Building"].filter(function (v,i){i++;return i==properties.SC||i==properties.HC*2||i==properties.WC*3||i==properties.PC*4}).join(",<br/>");
+                    public=public||"No Data";
+                    var popup='\
+                    <table>\
+                      <tr><td align="right"><b>ID</b>:</td><td>'+properties.ID+'</td></tr>\
+                      <tr><td align="right"><b>Buildings</b>:</td><td>'+properties.building+'</td></tr>\
+                      <tr><td align="right"><b>Area</b>:</td><td>'+properties.area_km2 + ' km²' + '</td></tr>\
+                      <tr><td align="right"><b>Density</b>:</td><td>'+properties.density+'</td></tr>\
+                      <tr><td align="right"><b>Priority Class</b>:</td><td>'+properties.prio_class+'</td></tr>';
 
+                    popup=popup+'\
+                    </table>';
+                } else {
+                    var type = "r";
+                    var ID = "r" + properties.ID;
+                }
+                if (type != "r") {
+                    L.popup()
+                        .setContent(popup)
+                        .setLatLng(e.latlng)
+                        .openOn(map);
+                    this.highlight = properties.ID;
+
+                    this.setFeatureStyle(ID, highlightStyle);
+                    L.DomEvent.stop(e);
+                }
+            });
+        vecTileLayer.highlight = null;
+        vecTileLayer.hidden = null;
+        vecTileLayer.hiddenstyle = {
+            fillColor: "lightgray",
+            fillOpacity: 0.1,
+            opacity: 0.1,
+            fill: true
+        };
+        vecTileLayer.clearHidden = function() {
+            if (this.hiddenIDs) {
+                for (let i = 0, len = this.hiddenIDs.length; i < len; i++) {
+                    let id = this.hiddenIDs[i];
+                    this.resetFeatureStyle(id);
+                }
+            }
+        };
+        vecTileLayer.clearHighlight = function() {
+            if (this.highlight) {
+                if (this.hiddenIDs && this.hiddenIDs.indexOf(this.highlight) > -1){
+                    this.setFeatureStyle(this.highlight, this.hiddenstyle);
+                } else {
+                    this.resetFeatureStyle(this.highlight);
+                }
+            }
+            this.highlight = null;
+        };
+                
 
         map.addLayer(vecTileLayer);
+        map.on("click", function() {
+            vecTileLayer.clearHighlight();
+        });
+        map.on("popupclose", function() {
+            vecTileLayer.clearHighlight();
+        });
 
  
         var sidebar = L.control.sidebar('sidebar', {
