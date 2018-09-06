@@ -206,7 +206,7 @@
                             map.removeLayer(overlaymaps[checkboxes[j].id]);
                         }
                         else {
-                            map.addLayer(overlaymaps[checkboxes[j].id]);
+                            map.addLayer(overlaymaps[checkboxes[j].id]).bringToBack();
                         }   
                     }
                 }
@@ -488,7 +488,9 @@
         };
 
 
-            let vecTileLayer = L.vectorGrid.protobuf("data/temporary_tiles/{z}/{x}/{y}.pbf", {
+            //let vecTileLayer = L.vectorGrid.protobuf("data/temporary_tiles/{z}/{x}/{y}.pbf", {
+            //let vecTileLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de/app_mapping/zambiamap/data/temporary_tiles/{z}/{x}/{y}.pbf", {
+            let vecTileLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zambia-clusters/{z}/{x}/{y}.pbf", {
                     rendererFactory: L.canvas.tile,
                     vectorTileLayerStyles: {
                         clusterz: function(prop, zoom) {
