@@ -51,7 +51,7 @@
         <div class="leaflet-sidebar-tabs">
             <ul role="tablist">
                 <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
-                <li><a href="#bert" role="tab"><i class="fa fa-key"></i></a></li>
+                <li><a href="#key" role="tab"><i class="fa fa-key"></i></a></li>
                 <li><a href=#layers role="tab"><i class="fa fa-layer-group"></i></a></li>
                 <li><a href="#settings" role="tab"><i class="fa fa-filter"></i></a></li>
                 <li><a href="#download" role="tab"><i class="fa fa-arrow-circle-down"></i></a></li>                
@@ -112,7 +112,7 @@
 
                 function SelectBasemap(input){
                     var i;
-                    var maps = ["Esri Aerial", "OpenStreetMap-Gray", "OpenStreetMap", "OpenTopoMap"];
+                    var maps = ["Esri Aerial", "OpenStreetMap-Gray", "OpenStreetMap", "OpenTopoMap", "Solar Irradiation"];
                     for (i = 0; i < maps.length; i++){
                         if (map.hasLayer(baseMaps[maps[i]]) && maps[i] != input)
                             {
@@ -120,7 +120,8 @@
                             //alert(maps[i]);
                             }
                     }
-                    map.addLayer(baseMaps[input]);
+                   map.addLayer(baseMaps[input]);
+		   baseMaps[input].bringToBack();
                 }
                 
     
@@ -206,16 +207,41 @@
                             map.removeLayer(overlaymaps[checkboxes[j].id]);
                         }
                         else {
-                            map.addLayer(overlaymaps[checkboxes[j].id]).bringToBack();
+                            map.addLayer(overlaymaps[checkboxes[j].id]);
                         }   
                     }
                 }
                 
 
                 </script>
-            </div>
 
+                <h3>Select Raster Overlays</h3>
+                <br>
+                 <label class="switch"> 
+                    <input name="" type="checkbox" onclick="toggleGHI()" id="toggle_ghi"/>
+                    <span class="slider"></span>
+                </label> Show Solar Irradiation
+	    
+	    </div>
 
+                <script>
+                function toggleGHI()
+                {
+                  var checkbox = document.getElementById('toggle_ghi');
+                  if (checkbox.checked == false)
+                      {
+                        if (map.hasLayer(ghi))
+                            {
+                            map.removeLayer(ghi);
+                            }
+                      }
+                  else
+                      {
+                        map.addLayer(ghi);
+                      }
+                }
+		</script>
+		
             <div class="leaflet-sidebar-pane" id="settings">
                 <h1 class="leaflet-sidebar-header">Filter<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
                 <h3>Headline</h3> Paragraph<br> create filters for data below 
@@ -329,7 +355,7 @@
             </div>
 
 
-            <div class="leaflet-sidebar-pane" id="bert">
+            <div class="leaflet-sidebar-pane" id="key">
                 <h1 class="leaflet-sidebar-header">
                         Key
                         <div class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></div>
@@ -385,6 +411,11 @@
                 maxZoom: 19,
                 attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
             }).addTo(map);	
+
+			let ghi = L.tileLayer("https://wam.rl-institut.de:84/data/ghi/{z}/{x}/{y}.png", {
+			    maxZoom: 19,
+			    attribution: '&copy; <a href="www.http://globalsolaratlas.info/">Global Solar Atlas</a>'
+			});   // .addTo(map) loads this as the initial basemap	;
 
 
 			// name set of tilelayers and adds them to the layer-selector
@@ -459,20 +490,22 @@
 					return {
 						weight: 2,
 						opacity: 0.9,
-						color: '#eeeeee',
+						color: '#ffffff',
 						//dashArray: '2',
 						fillOpacity: 0.1,
 						fillColor: 'ffffff'
 					};
 				},
 
-			});
+			}).addTo(map);
 
 			// zooms to extent of clicked region
 			// assumes that borders are a path or polygon, not a point
-			//borders.on("click", function (event) {
-			//    map.fitBounds(event.layer.getBounds());
-			//});
+			borders.on("click", function (event) {
+			    map.fitBounds(event.layer.getBounds());
+                            //map.removeLayer(borders);
+			    //document.getElementById('Borders').checked = false; 
+			});
 
         var color_cluster_with_few_buildings = "lightgray"
         var color_cluster_with_many_buildings = "red"
@@ -489,11 +522,17 @@
 
 
             //let vecTileLayer = L.vectorGrid.protobuf("data/temporary_tiles/{z}/{x}/{y}.pbf", {
-            //let vecTileLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de/app_mapping/zambiamap/data/temporary_tiles/{z}/{x}/{y}.pbf", {
-            let vecTileLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zambia-clusters/{z}/{x}/{y}.pbf", {
+            let vecTileLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zambia-vector/{z}/{x}/{y}.pbf", {
                     rendererFactory: L.canvas.tile,
                     vectorTileLayerStyles: {
-                        clusterz: function(prop, zoom) {
+			borders: function(prop, zoom) {
+			    return{
+			    color: "white",
+			    Opacity: 1,
+			    weight: 1			    
+			    };	
+			},
+                        clusters: function(prop, zoom) {
                             if (prop.building < 250) {
                                 amountcolor = "red";
                             } else {
@@ -605,19 +644,20 @@
         map.addControl(sidebar);
 
 			let baseMaps = {
-                "Esri Aerial": aerial,
-				"Grayscale": gray,
-				"OpenStreetMap": osm,
-				"OpenTopoMap": topo,
+                                "Esri Aerial": aerial,
+                                "Grayscale": gray,
+                                "OpenStreetMap": osm,
+			        "OpenTopoMap": topo,
 			};
 
 
 
 			// define and include overlaymaps
 			let overlaymaps = {
-                "Clusters": vecTileLayer,
-				"Postoffices": circles,
-				"Borders": borders,
+                            "Clusters": vecTileLayer,
+                            "Borders": borders,
+                            "Postoffices": circles,
+                            "Solar Irradiation": ghi,
 			};
 
         L.control.scale({
@@ -629,6 +669,15 @@
 
             map.on('zoomend', function() {
                 RefreshPreview();
+		    if (map.getZoom() >= 8) {
+			    //alert(map.getZoom());
+			    map.removeLayer(borders);
+			    document.getElementById('Borders').checked = false; 
+		    }
+		    if (map.getZoom() <= 8) {
+			    map.addLayer(borders);
+			    document.getElementById('Borders').checked = true; 
+		    }
             });
             map.on('moveend', function() {
                 RefreshPreview();
