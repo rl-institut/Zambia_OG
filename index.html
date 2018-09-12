@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset=utf-8 />
-		<title>Zambia Map</title>
+		<title>popups aside</title>
 		
 		<!-- font awesome offers symbols/icons. used e.g. as symbols for the tabs on the sidebar -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" />
@@ -14,7 +14,6 @@
         <link rel="stylesheet" href="css/nouislider.min.css" />
 		<!-- Stylesheet defines map extent -->
 		<link rel="stylesheet" href="css/styles.css"/>
-
 
 	</head>
 
@@ -374,6 +373,7 @@
     </div>
 
 
+
 		<script>
 			let options = {
 				//center: [-13.22, 27.85],
@@ -545,6 +545,8 @@
             weight: 2
         };
 
+        var info = L.control({position: 'bottomright'});
+
             //let vecTileLayer = L.vectorGrid.protobuf("data/temporary_tiles/{z}/{x}/{y}.pbf", {
             let vecTileLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zambia-vector/{z}/{x}/{y}.pbf", {
                     rendererFactory: L.canvas.tile,
@@ -588,34 +590,45 @@
                 this.clearHighlight();
                 let properties = e.layer.properties;
                 if (properties.ID !== undefined) {
+
+                    
+                    info.onAdd = function (map) {
+                        this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+                        this.update();
+                        return this._div;
+                    };
+                    // method that we will use to update the control based on feature properties passed
+                    info.update = function (props) {
+                        this._div.innerHTML = '<h4>Selection Detail</h4>' +
+                                              '<table>' + 
+                                              '<tr><td align="right"><b>ID</b>:</td><td>' + properties.ID + '</td></tr>' +  
+                                              '<tr><td align="right"><b>Province</b>:</td><td>'+properties.NAME_1+'</td></tr>' +
+                                              '<tr><td align="right"><b>Buildings</b>:</td><td>'+properties.building+'</td></tr>' +
+                                              '<tr><td align="right"><b>Area</b>:</td><td>'+properties.area_km2 + ' km²' + '</td></tr>' +
+                                              '<tr><td align="right"><b>Density</b>:</td><td>'+properties.buid_dens+'</td></tr>' +
+                                              '<tr><td align="right"><b>Distance to Grid</b>:</td><td>'+Math.round(properties.distance) + ' m' + '</td></tr>' +
+                                              '<tr><td align="right"><b>Priority Class</b>:</td><td>'+properties.prio_class+'</td></tr>' +
+                                              '</table>';
+                    };
+                    info.addTo(map);
+
+                    var layers = [];
+                    map.eachLayer(function(layer) {
+                        if( layer instanceof L.TileLayer )
+                            layers.push(layer);
+                    });
+
                     currentSelection = properties.ID; 
                     var type = "c";
                     var ID = properties.ID;
                     let public=["School","Healthcare","Water Point","Public Building"].filter(function (v,i){i++;return i==properties.SC||i==properties.HC*2||i==properties.WC*3||i==properties.PC*4}).join(",<br/>");
                     public=public||"No Data";
-                    var popup='\
-                    <table>\
-                      <tr><td align="right"><b>ID</b>:</td><td>'+properties.ID+'</td></tr>\
-                      <tr><td align="right"><b>Province</b>:</td><td>'+properties.NAME_1+'</td></tr>\
-                      <tr><td align="right"><b>Buildings</b>:</td><td>'+properties.building+'</td></tr>\
-                      <tr><td align="right"><b>Area</b>:</td><td>'+properties.area_km2 + ' km²' + '</td></tr>\
-                      <tr><td align="right"><b>Density</b>:</td><td>'+properties.buid_dens+'</td></tr>\
-                      <tr><td align="right"><b>Distance to Grid</b>:</td><td>'+Math.round(properties.distance) + ' m' + '</td></tr>\
-                      <tr><td align="right"><b>Priority Class</b>:</td><td>'+properties.prio_class+'</td></tr>';
-
-                    popup=popup+'\
-                    </table>';
                 } else {
                     var type = "r";
                     var ID = "r" + properties.ID;
                 }
                 if (type != "r") {
-                    L.popup()
-                        .setContent(popup)
-                        .setLatLng(e.latlng)
-                        .openOn(map);
                     this.highlight = properties.ID;
-
                     this.setFeatureStyle(ID, highlightStyle);
                     L.DomEvent.stop(e);
                 }
@@ -648,6 +661,7 @@
             }
             this.highlight = null;
             currentSelection = null;
+            map.removeControl(info);
         };
                 
         // the filter function selects objects by the limiting values set in the slider(s) 
@@ -679,19 +693,31 @@
             this.hiddenIDs = newhiddenIDs;
         };
 
+
+
+
+
+
+
+
+
+
         map.addLayer(vecTileLayer);
         map.on("click", function() {
             vecTileLayer.clearHighlight();
         });
-        map.on("popupclose", function() {
-            vecTileLayer.clearHighlight();
-        });
+
+//        map.on("popupclose", function() {
+//            vecTileLayer.clearHighlight();
+//        });
 
  
         var sidebar = L.control.sidebar('sidebar', {
             position: 'left'
         });
-
+        L.control.scale({
+            position: "topright"
+        }).addTo(map);
         L.control.zoom({
             position: "topright"
         }).addTo(map);
@@ -714,10 +740,6 @@
                             "Postoffices": circles,
                             "Solar Irradiation": ghi,
 			};
-
-        L.control.scale({
-            position: "bottomright"
-        }).addTo(map);
 
             toggleVecTileLayer();
             //toggleBorders();
