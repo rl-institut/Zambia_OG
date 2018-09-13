@@ -1,41 +1,56 @@
 <!Doctype html>
 <html>
-	<head>
-		<meta charset=utf-8 />
-		<title>popups aside</title>
-		
-		<!-- font awesome offers symbols/icons. used e.g. as symbols for the tabs on the sidebar -->
+    <head>
+        <meta charset=utf-8 />
+        <title>Zambia Map</title>
+
+        <!-- font awesome offers symbols/icons. used e.g. as symbols for the tabs on the sidebar -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" />
-		<!-- Stylesheet for Leaflet icons, fonts etc -->
-		<link rel="stylesheet" href="css/leaflet.css"/>
-        <link rel="stylesheet" href="css/will-change-memory.css">
+        <!-- Stylesheet for Leaflet icons, fonts etc -->
+        <link rel="stylesheet" href="css/leaflet.css"/>
+        <link rel="stylesheet" href="css/leaflet.measure.css" />
         <link rel="stylesheet" href="css/leaflet-sidebar.min.css" />
-		<!-- Stylesheet for nouislider -->
+        <link rel="stylesheet" href="css/will-change-memory.css">
+
+        <!-- Stylesheet for nouislider -->
         <link rel="stylesheet" href="css/nouislider.min.css" />
-		<!-- Stylesheet defines map extent -->
-		<link rel="stylesheet" href="css/styles.css"/>
 
-	</head>
+        <link rel="stylesheet" href="css/MarkerCluster.css"/>
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css"/>
 
-	<body>
+        <!-- Stylesheet defines map extent -->
+        <link rel="stylesheet" href="css/styles.css"/>
 
-		<!--Leaflet - JS-library for slippy maps -->		
-		<script src="javascript/leaflet.js"></script>
-		<!--jquery - enables loading a GeoJson from a file directly into Leaflet -->
-		<script src="javascript/jquery.min.js"></script>
-		<!--enables loading vectortiles -->
+    </head>
+
+    <body>
+
+        <!--Leaflet - JS-library for slippy maps -->
+        <script src="javascript/leaflet.js"></script>
+        <!--jquery - enables loading a GeoJson from a file directly into Leaflet -->
+        <script src="javascript/jquery.min.js"></script>
+        <!--enables loading vectortiles -->
         <script src="javascript/Leaflet.VectorGrid.bundled.js"></script>
-		<!--enables pretty checkboxes and advanced slider functions -->
+        <!--enables pretty checkboxes and advanced slider functions -->
         <script src="javascript/nouislider.min.js"></script>
-		<!--enables the leaflet-sidebar -->
+        <!--enables the leaflet-sidebar -->
         <script src="javascript/leaflet-sidebar.min.js"></script>
-		
-		<!--importing js-files with geojson inside. this approach is chosen, since loading geojson-files directly into a variable can be problematic  -->
-		<!--postoffices.js contains a javascript variable named "postoffices" with all geojson objects inside -->
-		<script src="data/sampledata_postoffices.js" type="text/javascript"></script> 
-		<!--provinces.js contains a javascript variable named "provinces" with all geojson objects inside -->
-		<script src="data/sampledata_provinces.js" type="text/javascript"></script> 
-		<!--nouislider enables better looking checkboxes and more functional sliders -->
+        <!--enables the measure tool -->
+        <script src="javascript/leaflet.measure.js""></script>
+
+
+
+        <!--clusters -->
+        <script src="javascript/leaflet.markercluster-src.js"></script>
+        <!--Points for clustering purposes -->
+        <script src="data/points.js"></script>
+
+        <!--importing js-files with geojson inside. this approach is chosen, since loading geojson-files directly into a variable can be problematic  -->
+        <!--variable centroids with points for all clusters -->
+        <script src="data/centroids.js" type="text/javascript"></script>
+        <!--provinces.js contains a javascript variable named "provinces" with all geojson objects inside -->
+        <script src="data/sampledata_provinces.js" type="text/javascript"></script>
+        <!--nouislider enables better looking checkboxes and more functional sliders -->
 
 
     <div id="map"></div>
@@ -69,7 +84,7 @@
             <h3>Select Basemap Layer </h3>
             <img class="basemap_preview" id="aerial_preview" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/6/34/36.png" onclick="SelectBasemap('Esri Aerial')" />
             Aerial Images (Esri) <br> 
-            <img class="basemap_preview" id="osm_preview" src="https://a.tile.openstreetmap.org/6/36/34.png" onclick="SelectBasemap('OpenStreetMap')"/>
+            <img class="basemap_preview" id="osm_preview" src="https://a.tile.openstreetmap.de/tiles/osmde/6/36/34.png" onclick="SelectBasemap('OpenStreetMap')"/>
             OpenStreetMap <br> 
             <img class="basemap_preview" id="topo_preview" src="https://a.tile.opentopomap.org/6/36/34.png" onclick="SelectBasemap('OpenTopoMap')"/>
             OpenTopoMap <br> 
@@ -91,10 +106,9 @@
             function long2tile(lon,zoom) { return (Math.floor((lon+180)/360*Math.pow(2,zoom))); }
             function lat2tile(lat,zoom)  { return (Math.floor((1-Math.log(Math.tan(lat*Math.PI/180) + 1/Math.cos(lat*Math.PI/180))/Math.PI)/2 *Math.pow(2,zoom))); }
 
-
             function RefreshPreview(){
                 document.getElementById("topo_preview").src="https://a.tile.opentopomap.org/" + url_from_coords(map.getZoom(), map.getCenter()) + ".png"
-                document.getElementById("osm_preview").src="https://a.tile.openstreetmap.org/" + url_from_coords(map.getZoom(), map.getCenter()) + ".png"
+                document.getElementById("osm_preview").src="https://a.tile.openstreetmap.de/tiles/osmde/" + url_from_coords(map.getZoom(), map.getCenter()) + ".png"
                 document.getElementById("aerial_preview").src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/" + url_from_coords_yx(map.getZoom(), map.getCenter()) + ".png"
                 }
 
@@ -109,8 +123,8 @@
                         }
                 }
                 map.addLayer(baseMaps[input]);
-	            baseMaps[input].bringToBack();
-                }
+                baseMaps[input].bringToBack();
+            }
                 
                 </script>
 
@@ -175,9 +189,9 @@
 
                 <br><br>
                 <label class="switch"> 
-                    <input type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Postoffices"/>
+                    <input type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Cluster Accumulations"/>
                     <span class="slider"></span>
-                </label> Show Postoffices
+                </label> Show Cluster Accumulations 
 
 
                 <script>
@@ -200,14 +214,24 @@
 
                 </script>
 
+
+               <h3>Buildings</h3> 
+                        Use this to filter the clusters to a desired buildings count. <br><br>
+                <div id="sliderpop"></div> <br>
+                    <div>
+                        <input type="number" id="input-with-keypress-0" name="range" />
+                        <input type="number" id="input-with-keypress-1" name="range" />
+                    </div>
+
+
                 <h3>Select Raster Overlays</h3>
                 <br>
                  <label class="switch"> 
                     <input name="" type="checkbox" onclick="toggleGHI()" id="toggle_ghi"/>
                     <span class="slider"></span>
                 </label> Show Solar Irradiation
-	    
-	    </div>
+        
+        </div>
 
                 <script>
                 function toggleGHI()
@@ -225,19 +249,12 @@
                         map.addLayer(ghi);
                       }
                 }
-		</script>
-		
+        </script>
+        
             <div class="leaflet-sidebar-pane" id="settings">
                 <h1 class="leaflet-sidebar-header">Filter<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
                 <h3>Headline</h3> Paragraph<br> create filters for data below 
-                     <h3>Buildings</h3> 
-                        Use this to filter the clusters to a desired buildings count. <br><br>
-                <div id="sliderpop"></div> <br>
-                    <div>
-                        <input type="number" id="input-with-keypress-0" name="range" />
-                        <input type="number" id="input-with-keypress-1" name="range" />
-                    </div>
-            </div>
+             </div>
 
             <script>
             var currentfilter = {
@@ -247,6 +264,9 @@
             };
 
             var currentSelection = null;
+            
+            // measuring is used in leaflet.measure.js
+            var measuring = false; // ! check dependencies before deleting this variable
 
             var buildingSlider = document.getElementById('sliderpop');
             var input0 = document.getElementById('input-with-keypress-0');
@@ -254,22 +274,22 @@
             var inputs = [input0, input1];
 
             noUiSlider.create(buildingSlider, {
-	            start: [currentfilter.minbuild, currentfilter.maxbuild],
-	            connect: true,
-	            //direction: 'rtl',
-	            //tooltips: [true, wNumb({ decimals: 1 })],
-	            range: {
-		            'min': [0, 1],
-		            'max': 1337
-	            }
+                start: [currentfilter.minbuild, currentfilter.maxbuild],
+                connect: true,
+                //direction: 'rtl',
+                //tooltips: [true, wNumb({ decimals: 1 })],
+                range: {
+                    'min': [0, 1],
+                    'max': 1337
+                }
             });
 
             buildingSlider.noUiSlider.on('update', function( values, handle ) {
-	            inputs[handle].value = values[handle];
+                inputs[handle].value = values[handle];
             });
 
             buildingSlider.noUiSlider.on('change', function( values, handle ) {
-	            //alert(inputs[handle].value + "funktioniert wohl auch mit overloading");
+                //alert(inputs[handle].value + "funktioniert wohl auch mit overloading");
                 currentfilter.minbuild = values[0];
                 currentfilter.maxbuild = values[1];
                 map.fireEvent("filterchange", currentfilter);
@@ -283,59 +303,59 @@
 
 
             function setSliderHandle(i, value) {
-	            var r = [null,null];
-	            r[i] = value;
-	            buildingSlider.noUiSlider.set(r);
+                var r = [null,null];
+                r[i] = value;
+                buildingSlider.noUiSlider.set(r);
             }
 
             // Listen to keydown events on the input field.
             inputs.forEach(function(input, handle) {
 
-	            input.addEventListener('change', function(){
-		            setSliderHandle(handle, this.value);
-	            });
+                input.addEventListener('change', function(){
+                    setSliderHandle(handle, this.value);
+                });
 
-	            input.addEventListener('keydown', function( e ) {
+                input.addEventListener('keydown', function( e ) {
 
-		            var values = buildingSlider.noUiSlider.get();
-		            var value = Number(values[handle]);
-		            // [[handle0_down, handle0_up], [handle1_down, handle1_up]]
-		            var steps = buildingSlider.noUiSlider.steps();
-		            // [down, up]
-		            var step = steps[handle];
-		            var position;
+                    var values = buildingSlider.noUiSlider.get();
+                    var value = Number(values[handle]);
+                    // [[handle0_down, handle0_up], [handle1_down, handle1_up]]
+                    var steps = buildingSlider.noUiSlider.steps();
+                    // [down, up]
+                    var step = steps[handle];
+                    var position;
 
-		            // 13 is enter,
-		            // 38 is key up,
-		            // 40 is key down.
-		            switch ( e.which ) {
-			            case 13:
-				            setSliderHandle(handle, this.value);
-				            break;
-			            case 38:
-				            // Get step to go increase slider value (up)
-				            position = step[1];
-				            // false = no step is set
-				            if ( position === false ) {
-					            position = 1;
-				            }
-				            // null = edge of slider
-				            if ( position !== null ) {
-					            setSliderHandle(handle, value + position);
-				            }
+                    // 13 is enter,
+                    // 38 is key up,
+                    // 40 is key down.
+                    switch ( e.which ) {
+                        case 13:
+                            setSliderHandle(handle, this.value);
+                            break;
+                        case 38:
+                            // Get step to go increase slider value (up)
+                            position = step[1];
+                            // false = no step is set
+                            if ( position === false ) {
+                                position = 1;
+                            }
+                            // null = edge of slider
+                            if ( position !== null ) {
+                                setSliderHandle(handle, value + position);
+                            }
 
-				            break;
-			            case 40:
-				            position = step[0];
-				            if ( position === false ) {
-					            position = 1;
-				            }
-				            if ( position !== null ) {
-					            setSliderHandle(handle, value - position);
-				            }
-				            break;
-		            }
-	            });
+                            break;
+                        case 40:
+                            position = step[0];
+                            if ( position === false ) {
+                                position = 1;
+                            }
+                            if ( position !== null ) {
+                                setSliderHandle(handle, value - position);
+                            }
+                            break;
+                    }
+                });
             });
 
             </script>
@@ -374,145 +394,114 @@
 
 
 
-		<script>
-			let options = {
-				//center: [-13.22, 27.85],
-				//zoom: 6,
+        <script>
+            let options = {
+                //center: [-13.22, 27.85],
+                //zoom: 6,
                 center: [-16.2951, 26.6655],
                 zoom: 12,
-				minZoom: 6,
-				maxZoom: 16,
-				zoomControl: false,
-				//maxBounds: [[-24, 7],[-2, 48]]
-			}
+                minZoom: 6,
+                maxZoom: 16,
+                zoomControl: false,
+                //maxBounds: [[-24, 7],[-2, 48]]
+            }
 
-			//
-			// Create empty leaflet-map (named "map") on canvas with parameters defined in options
-			//
+            //
+            // Create empty leaflet-map (named "map") on canvas with parameters defined in options
+            //
 
-			let map = L.map("map", options);
+            let map = L.map("map", options);
+
+            //
+            // Definition of Basemap-Tile Sources to add map 
+            // find more basemaps here (please inspect licenses): https://mc.bbbike.org/mc/?num=2&mt0=mapnik&mt1=mapnik-bw
+            //
 
 
-
-			//
-			// Definition of Basemap-Tile Sources to add map 
-			// find more basemaps here (please inspect licenses): https://mc.bbbike.org/mc/?num=2&mt0=mapnik&mt1=mapnik-bw
-			//
-
-			
-
-			let osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-			    maxZoom: 19,
-			    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-			});
+            let osm = L.tileLayer("https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png", {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://www.openstreetmap.de/index.html">OpenStreetMap (de)</a>'
+            });
 
             let topo = L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
-        	    maxZoom: 19,
-        	    attribution: '&copy; <a href="https://opentopomap.org">OpenTopoMap</a>'
-			});
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://opentopomap.org">OpenTopoMap</a>'
+            });
 
             let aerial = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
                 maxZoom: 19,
                 attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-            }).addTo(map);	
+            }).addTo(map);    
 
-			let ghi = L.tileLayer("https://wam.rl-institut.de:84/data/ghi/{z}/{x}/{y}.png", {
-			    maxZoom: 19,
-			    attribution: '&copy; <a href="www.http://globalsolaratlas.info/">Global Solar Atlas</a>'
-			});   // .addTo(map) loads this as the initial basemap	;
-
-
-			// name set of tilelayers and adds them to the layer-selector
-
-			/*
-
-			// loading a GeoJSON file. In this sample: Post-office-data from OpenStreetMap 
-			$.getJSON("data/sampledata_postoffices.geojson",function(data){
-			// L.geoJson function is used to parse the geojson file and load it onto the map
-			var datalayer = L.geoJson(data ,{
-				//popups and their content are defined here
-				onEachFeature: function(feature, featureLayer) {
-				featureLayer.bindPopup(feature.properties.name);
-				}
-			}).addTo(map);
-			// command centers and zooms the map to the bounds of datalayer
-			//map.fitBounds(datalayer.getBounds());
-			});
-
-			L.control.layers(baseMaps).addTo(map);
-
-			*/
-	
-			 //
-			 //loading a JS-File with geoJSON information
-			 //
+            let ghi = L.tileLayer("https://wam.rl-institut.de:84/data/ghi/{z}/{x}/{y}.png", {
+                maxZoom: 19,
+                attribution: '&copy; <a href="www.http://globalsolaratlas.info/">Global Solar Atlas</a>'
+            });   // .addTo(map) loads this as the initial basemap    ;
 
 
-			 // define Popups for all features in map 
+            // define Popups for all features in map 
 
-			
-			function onEachFeature(feature, layer) {
-				let popupContent = "<b> Sweet Popup Title</b><br>"; //define popuptitle here, if needed. fails to load if it references missing key in one of the elements
+            
+            function onEachFeature(feature, layer) {
+                let popupContent = "<b> Sweet Popup Title</b><br>"; //define popuptitle here, if needed. fails to load if it references missing key in one of the elements
 
-			// iterate through all properties of all features and display them in popup
-		        Object.keys(feature.properties).forEach(function(key,index) {
-		            popupContent = popupContent + "<b>" + key + ":</b> " + feature.properties[key] + "<br>";
-		        });
+            // iterate through all properties of all features and display them in popup
+                Object.keys(feature.properties).forEach(function(key,index) {
+                    popupContent = popupContent + "<b>" + key + ":</b> " + feature.properties[key] + "<br>";
+                });
 
-				if (feature.properties && feature.properties.popupContent) {
-					popupContent += feature.properties.popupContent;
-						}
+                if (feature.properties && feature.properties.popupContent) {
+                    popupContent += feature.properties.popupContent;
+                        }
 
-						layer.bindPopup(popupContent);
-					}
+                        layer.bindPopup(popupContent);
+                    }
 
+            //select datasources and apply style
+            let circles = L.geoJSON([centroids], {
+                style: function (feature) {
+                    return feature.properties && feature.properties.style;
+                },
+                // uncomment below to allow popups for this layer
+                 onEachFeature: onEachFeature,
+        
+                pointToLayer: function (feature, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 8,
+                        fillColor: "#ff7800",
+                        color: "#000",
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.8,
+                    });
+                }
+            });
 
+            //select datasources and apply style
+            let borders = L.geoJSON([provinces], {
+                style: function (feature) {
+                    return {
+                        weight: 2,
+                        opacity: 0.9,
+                        color: '#ffffff',
+                        //dashArray: '2',
+                        fillOpacity: 0.1,
+                        fillColor: 'ffffff'
+                    };
+                },
 
-			//select datasources and apply style
-			let circles = L.geoJSON([postoffices], {
-				style: function (feature) {
-					return feature.properties && feature.properties.style;
-				},
-				// uncomment below to allow popups for this layer
-				 onEachFeature: onEachFeature,
-		
-				pointToLayer: function (feature, latlng) {
-					return L.circleMarker(latlng, {
-						radius: 8,
-						fillColor: "#ff7800",
-						color: "#000",
-						weight: 1,
-						opacity: 1,
-						fillOpacity: 0.8
-					});
-				}
-			});
+            });
 
-			//select datasources and apply style
-			let borders = L.geoJSON([provinces], {
-				style: function (feature) {
-					return {
-						weight: 2,
-						opacity: 0.9,
-						color: '#ffffff',
-						//dashArray: '2',
-						fillOpacity: 0.1,
-						fillColor: 'ffffff'
-					};
-				},
-
-			});
-
-			// zooms to extent of clicked region
-			// assumes that borders are a path or polygon, not a point
-			borders.on("click", function (event) {
-			    map.fitBounds(event.layer.getBounds());
+            // zooms to extent of clicked region
+            // assumes that borders are a path or polygon, not a point
+            borders.on("click", function (event) {
+                map.fitBounds(event.layer.getBounds());
                             //map.removeLayer(borders);
-			    //document.getElementById('Borders').checked = false; 
-			});
+                //document.getElementById('Borders').checked = false; 
+            });
 
-        var color_cluster_with_few_buildings = "lightgray"
-        var color_cluster_with_many_buildings = "red"
+
+        var info = L.control({position: 'bottomright'});
 
         var highlightStyle = {
             fillColor: "#0044ff",
@@ -545,25 +534,25 @@
             weight: 2
         };
 
-        var info = L.control({position: 'bottomright'});
-
+           
             //let vecTileLayer = L.vectorGrid.protobuf("data/temporary_tiles/{z}/{x}/{y}.pbf", {
             let vecTileLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zambia-vector/{z}/{x}/{y}.pbf", {
                     rendererFactory: L.canvas.tile,
                     vectorTileLayerStyles: {
-			borders: function(prop, zoom) {
-			    return{
-			    color: "white",
-			    Opacity: 1,
-			    weight: 1			    
-			    };	
-			},
+                        borders: function(prop, zoom) {
+                            return{
+                            color: "white",
+                            Opacity: 1,
+                            weight: 1                
+                            };    
+                        },
                         clusters: function(prop, zoom) {
                             //if (prop.building < 250) {
                             //    amountcolor = "red";
                             //} else {
                             //    amountcolor = "green";
                             //}
+                            //L.marker([prop.lon, prop.lat]).addTo(map);
                             return {
                                 fill: true,
                                 fillColor: "red",
@@ -584,60 +573,64 @@
                         return "g" + f.properties.ID;
                     }
                     return "r" + f.properties.OBJECTID;
-                }
+                },
             })
+
+            
             .on("click", function(e) {
-                this.clearHighlight();
-                let properties = e.layer.properties;
-                if (properties.ID !== undefined) {
+                if (measuring == false){
+                    this.clearHighlight();
+                    let properties = e.layer.properties;
+                    if (properties.ID !== undefined) {
 
-                    // disableClickPropagation enables selecting and copying of text in control element
-                    info.onAdd = function (map) {
-                        this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
-                        this.update();
-                        L.DomEvent.disableClickPropagation(this._div);
-                        return this._div;                        
-                    };
-                    // method that we will use to update the control based on feature properties passed
+                        // disableClickPropagation enables selecting and copying of text in control element
+                        info.onAdd = function (map) {
+                            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+                            this.update();
+                            L.DomEvent.disableClickPropagation(this._div);
+                            return this._div;                        
+                        };
+                        // method that we will use to update the control based on feature properties passed
 
+                        info.update = function (props) {
+                            this._div.innerHTML = '<h4>Selection Detail</h4>' +
+                                                  '<table>' + 
+                                                  '<tr><td align="right"><b>ID</b>:</td><td>' + properties.ID + '</td></tr>' +  
+                                                  '<tr><td align="right"><b>Province</b>:</td><td>'+properties.NAME_1+'</td></tr>' +
+                                                  '<tr><td align="right"><b>Buildings</b>:</td><td>'+properties.building+'</td></tr>' +
+                                                  '<tr><td align="right"><b>Area</b>:</td><td>'+properties.area_km2 + ' km²' + '</td></tr>' +
+                                                  '<tr><td align="right"><b>Density</b>:</td><td>'+properties.buid_dens+'</td></tr>' +
+                                                  '<tr><td align="right"><b>Distance to Grid</b>:</td><td>'+Math.round(properties.distance) + ' m' + '</td></tr>' +
+                                                  '<tr><td align="right"><b>Priority Class</b>:</td><td>'+properties.prio_class+'</td></tr>' +
+                                                  '</table>';
+                            this._div.innerHTML
+                        };
+                        info.addTo(map);
 
+                        var layers = [];
+                        map.eachLayer(function(layer) {
+                            if( layer instanceof L.TileLayer )
+                                layers.push(layer);
+                        });
 
-                    info.update = function (props) {
-                        this._div.innerHTML = '<h4>Selection Detail</h4>' +
-                                              '<table>' + 
-                                              '<tr><td align="right"><b>ID</b>:</td><td>' + properties.ID + '</td></tr>' +  
-                                              '<tr><td align="right"><b>Province</b>:</td><td>'+properties.NAME_1+'</td></tr>' +
-                                              '<tr><td align="right"><b>Buildings</b>:</td><td>'+properties.building+'</td></tr>' +
-                                              '<tr><td align="right"><b>Area</b>:</td><td>'+properties.area_km2 + ' km²' + '</td></tr>' +
-                                              '<tr><td align="right"><b>Density</b>:</td><td>'+properties.buid_dens+'</td></tr>' +
-                                              '<tr><td align="right"><b>Distance to Grid</b>:</td><td>'+Math.round(properties.distance) + ' m' + '</td></tr>' +
-                                              '<tr><td align="right"><b>Priority Class</b>:</td><td>'+properties.prio_class+'</td></tr>' +
-                                              '</table>';
-                        this._div.innerHTML
-                    };
-                    info.addTo(map);
-
-                    var layers = [];
-                    map.eachLayer(function(layer) {
-                        if( layer instanceof L.TileLayer )
-                            layers.push(layer);
-                    });
-
-                    currentSelection = properties.ID; 
-                    var type = "c";
-                    var ID = properties.ID;
-                    let public=["School","Healthcare","Water Point","Public Building"].filter(function (v,i){i++;return i==properties.SC||i==properties.HC*2||i==properties.WC*3||i==properties.PC*4}).join(",<br/>");
-                    public=public||"No Data";
-                } else {
-                    var type = "r";
-                    var ID = "r" + properties.ID;
+                        currentSelection = properties.ID; 
+                        var type = "c";
+                        var ID = properties.ID;
+                        let public=["School","Healthcare","Water Point","Public Building"].filter(function (v,i){i++;return i==properties.SC||i==properties.HC*2||i==properties.WC*3||i==properties.PC*4}).join(",<br/>");
+                        public=public||"No Data";
+                    } else {
+                        var type = "r";
+                        var ID = "r" + properties.ID;
+                    }
+                    if (type != "r") {
+                        this.highlight = properties.ID;
+                        this.setFeatureStyle(ID, highlightStyle);
+                        L.DomEvent.stop(e);
+                    }
                 }
-                if (type != "r") {
-                    this.highlight = properties.ID;
-                    this.setFeatureStyle(ID, highlightStyle);
-                    L.DomEvent.stop(e);
-                }
-            });
+              }); 
+        
+
         vecTileLayer.highlight = null;
         vecTileLayer.hidden = null;
         vecTileLayer.hiddenstyle = {
@@ -655,12 +648,14 @@
                 }
             }
         };
-        vecTileLayer.clearHighlight = function() {
 
-            if (this.highlight) {
+        vecTileLayer.clearHighlight = function() {
+            // || this.highlight == 0 is necessary for the element with ID == 0
+            if (this.highlight || this.highlight == 0) {
                 if (this.hiddenIDs && this.hiddenIDs.indexOf(this.highlight) > -1){
                     this.setFeatureStyle(this.highlight, this.hiddenstyle); 
-                } else {
+                } 
+                else{
                     this.resetFeatureStyle(this.highlight);
                 }
             }
@@ -698,11 +693,9 @@
             this.hiddenIDs = newhiddenIDs;
         };
 
-
-
-
-
-
+        var clusteracc = L.markerClusterGroup({chunkedLoading: true});
+        clusteracc.addLayer(circles);
+        //map.addLayer(clusteracc)    
 
 
 
@@ -727,39 +720,81 @@
             position: "topright"
         }).addTo(map);
 
+        var measurecontrol = L.control.measure(
+            {
+            //  control position
+            position: 'topright',
+            //  weather to use keyboard control for this plugin
+            keyboard: true,
+            //  shortcut to activate measure
+            activeKeyCode: 'M'.charCodeAt(0),
+            //  shortcut to cancel measure, defaults to 'Esc'
+            cancelKeyCode: 27,
+            //  line color
+            lineColor: 'red',
+            //  line weight
+            lineWeight: 2,
+            //  line dash
+            lineDashArray: '6, 6',
+            //  line opacity
+            lineOpacity: 1
+        });
+        map.addControl(measurecontrol);
+
+        var bob = L.control.measure(
+            {
+            //  control position
+            position: 'topright',
+            //  weather to use keyboard control for this plugin
+            keyboard: true,
+            //  shortcut to activate measure
+            activeKeyCode: 'M'.charCodeAt(0),
+            //  shortcut to cancel measure, defaults to 'Esc'
+            cancelKeyCode: 27,
+            //  line color
+            lineColor: 'red',
+            //  line weight
+            lineWeight: 2,
+            //  line dash
+            lineDashArray: '6, 6',
+            //  line opacity
+            lineOpacity: 1
+        });
+        map.addControl(measurecontrol);
 
         map.addControl(sidebar);
 
-			let baseMaps = {
+            let baseMaps = {
                     "Esri Aerial": aerial,
                     "OpenStreetMap": osm,
-			        "OpenTopoMap": topo,
-			};
+                    "OpenTopoMap": topo,
+            };
 
 
 
-			// define and include overlaymaps
-			let overlaymaps = {
+            // define and include overlaymaps
+            let overlaymaps = {
                             "Clusters": vecTileLayer,
                             "Borders": borders,
-                            "Postoffices": circles,
+                            "Centroids": circles,
+                            "Cluster Accumulations": clusteracc,
                             "Solar Irradiation": ghi,
-			};
+            };
 
             toggleVecTileLayer();
             //toggleBorders();
 
             map.on('zoomend', function() {
                 RefreshPreview();
-		    if (map.getZoom() >= 8) {
-			    //alert(map.getZoom());
-			    map.removeLayer(borders);
-			    document.getElementById('Borders').checked = false; 
-		    }
-		    if (map.getZoom() <= 8) {
-			    map.addLayer(borders);
-			    document.getElementById('Borders').checked = true; 
-		    }
+            if (map.getZoom() >= 8) {
+                //alert(map.getZoom());
+                map.removeLayer(borders);
+                document.getElementById('Borders').checked = false; 
+            }
+            if (map.getZoom() <= 8) {
+                map.addLayer(borders);
+                document.getElementById('Borders').checked = true; 
+            }
             //map.fireEvent("filterchange", currentfilter);
             });
             map.on('moveend', function() {
@@ -776,10 +811,10 @@
             });
 
 
-		</script>
-	
-		
-	</body>
+        </script>
+    
+        
+    </body>
 
 </html>
 
