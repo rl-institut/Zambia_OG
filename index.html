@@ -62,7 +62,7 @@
                 <li><a href="#key" role="tab"><i class="fa fa-key"></i></a></li>
                 <li><a href="#layers" role="tab"><i class="fa fa-layer-group"></i></a></li>
                 <li><a href="#settings" role="tab"><i class="fa fa-filter"></i></a></li>
-                <li><a href="#download" role="tab"><i class="fa fa-arrow-circle-down"></i></a></li>                
+                <li><a href="#download" role="tab"><i class="fa fa-arrow-circle-down"></i></a></li>
                 <li><a href="#about" role="tab"><i class="fa fa-question-circle"></i></a></li>
             </ul>
         </div>
@@ -73,7 +73,7 @@
                 <div class="leaflet-sidebar-close"><i class="fa fa-times"></i></div>
             </h1>
             <p> html content in paragraph. You may include an image as well:</p>
-            
+
             <p class="license"><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
             <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" />
             </a><br />The image links to the CC-website. Here is the same link again: <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA 4.0</a>.</p>
@@ -83,11 +83,11 @@
             <h1 class="leaflet-sidebar-header">Layers<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
             <h3>Select Basemap Layer </h3>
             <img class="basemap_preview" id="aerial_preview" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/6/34/36.png" onclick="SelectBasemap('Esri Aerial')" />
-            Aerial Images (Esri) <br> 
+            Aerial Images (Esri) <br>
             <img class="basemap_preview" id="osm_preview" src="https://a.tile.openstreetmap.de/tiles/osmde/6/36/34.png" onclick="SelectBasemap('OpenStreetMap')"/>
-            OpenStreetMap <br> 
+            OpenStreetMap <br>
             <img class="basemap_preview" id="topo_preview" src="https://a.tile.opentopomap.org/6/36/34.png" onclick="SelectBasemap('OpenTopoMap')"/>
-            OpenTopoMap <br> 
+            OpenTopoMap <br>
             </p>
 
 
@@ -125,7 +125,7 @@
                 map.addLayer(baseMaps[input]);
                 baseMaps[input].bringToBack();
             }
-                
+
                 </script>
 
 <!--
@@ -147,8 +147,8 @@
                         }
                         else {
                             map.removeLayer(baseMaps[x[i].id]);
-                        }    
-                        
+                        }
+
                     }
                 }
 
@@ -157,7 +157,7 @@
 -->
             <h3>Select Overlay Information </h3>
             <br>
-            <label class="switch"> 
+            <label class="switch">
                 <input checked type="checkbox" onclick="toggleVecTileLayer()" id="toggle_vl"/>
                 <span class="slider"></span>
             </label> Show Clusters
@@ -182,16 +182,16 @@
             </script>
 
                 <br><br>
-                <label class="switch"> 
+                <label class="switch">
                     <input type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Borders"/>
                     <span class="slider"></span>
                 </label> Show Borders
 
                 <br><br>
-                <label class="switch"> 
+                <label class="switch">
                     <input type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Cluster Accumulations"/>
                     <span class="slider"></span>
-                </label> Show Cluster Accumulations 
+                </label> Show Cluster Accumulations
 
 
                 <script>
@@ -210,7 +210,7 @@
                         }   
                     }
                 }
-                
+
 
                 </script>
 
@@ -582,6 +582,8 @@
                     this.clearHighlight();
                     let properties = e.layer.properties;
                     if (properties.ID !== undefined) {
+                        var bbox = (properties.bb_south + ',' + properties.bb_west + ',' + properties.bb_north + ',' + properties.bb_east);
+                        downloadstring =('http://overpass-api.de/api/interpreter?data=(node[building=yes](' + bbox + ');way[building=yes](' + bbox + '););(._;>;);out meta;');
 
                         // disableClickPropagation enables selecting and copying of text in control element
                         info.onAdd = function (map) {
@@ -590,7 +592,7 @@
                             L.DomEvent.disableClickPropagation(this._div);
                             return this._div;                        
                         };
-                        // method that we will use to update the control based on feature properties passed
+                        // method that we will use to update the control based on feature properties passed  <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA 4.0</a>
 
                         info.update = function (props) {
                             this._div.innerHTML = '<h4>Selection Detail</h4>' +
@@ -602,6 +604,7 @@
                                                   '<tr><td align="right"><b>Density</b>:</td><td>'+properties.buid_dens+'</td></tr>' +
                                                   '<tr><td align="right"><b>Distance to Grid</b>:</td><td>'+Math.round(properties.distance) + ' m' + '</td></tr>' +
                                                   '<tr><td align="right"><b>Priority Class</b>:</td><td>'+properties.prio_class+'</td></tr>' +
+                                                  '<tr><td align="right"><b>Download Buildings</b>:</td><td>' + '<a href="' + downloadstring + '"> Link<a/>' +'</td></tr>' +
                                                   '</table>';
                             this._div.innerHTML
                         };
