@@ -121,7 +121,7 @@
                         map.removeLayer(baseMaps[maps[i]]);
                         //alert(maps[i]);
                         }
-                }
+                    }
                 map.addLayer(baseMaps[input]);
                 baseMaps[input].bringToBack();
             }
@@ -189,7 +189,7 @@
 
                 <br><br>
                 <label class="switch">
-                    <input type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Cluster Accumulations"/>
+                    <input checked type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Cluster Accumulations"/>
                     <span class="slider"></span>
                 </label> Show Cluster Accumulations
 
@@ -396,10 +396,10 @@
 
         <script>
             let options = {
-                //center: [-13.22, 27.85],
-                //zoom: 6,
-                center: [-16.2951, 26.6655],
-                zoom: 12,
+                center: [-13.22, 27.85],
+                zoom: 6,
+                //center: [-16.2951, 26.6655],
+                //zoom: 12,
                 minZoom: 6,
                 maxZoom: 16,
                 zoomControl: false,
@@ -464,18 +464,24 @@
                 },
                 // uncomment below to allow popups for this layer
                  onEachFeature: onEachFeature,
-        
-                pointToLayer: function (feature, latlng) {
-                    return L.circleMarker(latlng, {
-                        radius: 8,
-                        fillColor: "#ff7800",
-                        color: "#000",
-                        weight: 1,
-                        opacity: 1,
-                        fillOpacity: 0.8,
-                    });
-                }
+
+                    pointToLayer: function (feature, latlng) {
+                        return L.circleMarker(latlng, {
+                            radius: 8,
+                            fillColor: "#ff7800",
+                            color: "#000",
+                            weight: 1,
+                            opacity: 1,
+                            fillOpacity: 0.8,
+                        });
+                    }
+
             });
+
+
+
+
+
 
             //select datasources and apply style
             let borders = L.geoJSON([provinces], {
@@ -700,8 +706,35 @@
         clusteracc.addLayer(circles);
         //map.addLayer(clusteracc)    
 
+        clusteracc.filter = function(filter, map) {
+            this.clearLayers();
+            let markerList = [];
+            for (let i = 0; i < centroids.features.length; i++) {
+                let point = centroids.features[i];
+                //alert(point.properties.building)
+                if (point.properties.building >= currentfilter.minbuild && point.properties.building <= currentfilter.maxbuild) {
+                    let info = point.properties.building;
+                    //alert(point.properties.lat + ' ' + point.properties.lon + ' ' + info);
+                    //let marker = L.marker(L.latLng(point.properties.lon, point.properties.lat));
+                    let orange =  L.circleMarker([point.properties.lon, point.properties.lat], {
+                                   radius: 8,
+                                   fillColor: "#ff7800",
+                                   color: "#000",
+                                   weight: 1,
+                                   opacity: 1,
+                                   fillOpacity: 0.8,
+                        });
+                    markerList.push(orange);
+                }
+            }
+            this.addLayers(markerList);
+            map.addLayer(this);
+        };
 
 
+  
+
+        //L.marker([-14.456, 27.971]).addTo(map);
 
         map.addLayer(vecTileLayer);
         map.on("click", function() {
@@ -785,7 +818,7 @@
             };
 
             toggleVecTileLayer();
-            //toggleBorders();
+            toggleBorders();
 
             map.on('zoomend', function() {
                 RefreshPreview();
@@ -804,12 +837,17 @@
                 RefreshPreview();
                 // when the map is panned, newly visible objects need to be filtered according 
                 // to the selected parameters. the function to do so is called here.
-                map.fireEvent("filterchange", currentfilter);
+                map.fireEvent("mapmove", currentfilter);
             });
 
             map.on("layeradd",function (){vecTileLayer.bringToFront();});
 
             map.addEventListener("filterchange", function(filter) {
+                vecTileLayer.filter(currentfilter);
+                clusteracc.filter(currentfilter, map);
+            });
+
+            map.addEventListener("mapmove", function(filter) {
                 vecTileLayer.filter(currentfilter);
             });
 
