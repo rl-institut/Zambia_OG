@@ -155,12 +155,37 @@
 
                 </script>
 -->
+
+                <h3>Select Raster Overlays</h3>
+                 <label class="switch"> 
+                    <input name="" type="checkbox" onclick="toggleGHI()" id="toggle_ghi"/>
+                    <span class="slider"></span>
+                </label> Solar Irradiation
+
+
+                <script>
+                function toggleGHI()
+                {
+                  var checkbox = document.getElementById('toggle_ghi');
+                  if (checkbox.checked == false)
+                      {
+                        if (map.hasLayer(ghi))
+                            {
+                            map.removeLayer(ghi);
+                            }
+                      }
+                  else
+                      {
+                        map.addLayer(ghi);
+                      }
+                }
+        </script>
+
             <h3>Select Overlay Information </h3>
-            <br>
             <label class="switch">
                 <input checked type="checkbox" onclick="toggleVecTileLayer()" id="toggle_vl"/>
                 <span class="slider"></span>
-            </label> Show Clusters
+            </label> Clusters
 
             <script>
 
@@ -185,13 +210,14 @@
                 <label class="switch">
                     <input type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Borders"/>
                     <span class="slider"></span>
-                </label> Show Borders
+                </label> Borders
 
                 <br><br>
                 <label class="switch">
                     <input checked type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Cluster Accumulations"/>
                     <span class="slider"></span>
-                </label> Show Cluster Accumulations
+                </label> Cluster Accumulations
+                <br><br>
 
 
                 <script>
@@ -213,6 +239,30 @@
 
 
                 </script>
+
+
+            <h1 class="leaflet-sidebar-header">
+                 Filters Submenu
+                <div class="leaflet-sidebar-close"><i class="fa fa-times"></i></div>
+            </h1>
+
+               <h3>Cell Coverage</h3> 
+                <div id="cellcoverage"></div>
+                <form>
+                    <select id="selectcellcoverage" onChange="cellfilter(this)">
+                        <option value="nofilter">Show all</option>
+                        <option value="1">Has Cell Coverage</option>
+                        <option value="0">No Cell Coverage</option>>
+                    </select>
+                    <br>
+                </form>
+
+                <script>
+                    function cellfilter(elem){
+                        alert("selected " + document.getElementById('selectcellcoverage'));
+                    }
+                </script>
+
 
 
                <h3>Buildings</h3> 
@@ -242,33 +292,7 @@
                         <input type="number" id="input-with-keypress-6" name="range" step="0.02"/>
                         <input type="number" id="input-with-keypress-7" name="range" step="0.02"/>
                     </div>
-
-                <h3>Select Raster Overlays</h3>
-                <br>
-                 <label class="switch"> 
-                    <input name="" type="checkbox" onclick="toggleGHI()" id="toggle_ghi"/>
-                    <span class="slider"></span>
-                </label> Show Solar Irradiation
         </div>
-
-                <script>
-                function toggleGHI()
-                {
-                  var checkbox = document.getElementById('toggle_ghi');
-                  if (checkbox.checked == false)
-                      {
-                        if (map.hasLayer(ghi))
-                            {
-                            map.removeLayer(ghi);
-                            }
-                      }
-                  else
-                      {
-                        map.addLayer(ghi);
-                      }
-                }
-        </script>
-        
             <div class="leaflet-sidebar-pane" id="settings">
                 <h1 class="leaflet-sidebar-header">Filter<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
                 <h3>Headline</h3> Paragraph<br> create filters for data below 
