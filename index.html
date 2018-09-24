@@ -216,13 +216,32 @@
 
 
                <h3>Buildings</h3> 
-                        Use this to filter the clusters to a desired buildings count. <br><br>
-                <div id="sliderpop"></div> <br>
+                <div id="sliderbuild"></div> <br>
                     <div>
                         <input type="number" id="input-with-keypress-0" name="range" />
                         <input type="number" id="input-with-keypress-1" name="range" />
                     </div>
 
+               <h3>Building Density</h3> 
+                <div id="sliderbdens"></div> <br>
+                    <div>
+                        <input type="number" id="input-with-keypress-2" name="range" />
+                        <input type="number" id="input-with-keypress-3" name="range" />
+                    </div>
+
+               <h3>Distance to Grid (m)</h3> 
+                <div id="sliderdist"></div> <br>
+                    <div>
+                        <input type="number" id="input-with-keypress-4" name="range" />
+                        <input type="number" id="input-with-keypress-5" name="range" />
+                    </div>
+
+               <h3>Area (km²)</h3> 
+                <div id="sliderarea"></div> <br>
+                    <div>
+                        <input type="number" id="input-with-keypress-6" name="range" step="0.02"/>
+                        <input type="number" id="input-with-keypress-7" name="range" step="0.02"/>
+                    </div>
 
                 <h3>Select Raster Overlays</h3>
                 <br>
@@ -230,7 +249,6 @@
                     <input name="" type="checkbox" onclick="toggleGHI()" id="toggle_ghi"/>
                     <span class="slider"></span>
                 </label> Show Solar Irradiation
-        
         </div>
 
                 <script>
@@ -259,8 +277,14 @@
             <script>
             var currentfilter = {
                 minbuild: 0,
-                maxbuild: 1337,
-
+                maxbuild: 6000,
+                minarea: 0.0,
+                maxarea: 10.0,
+                minbdens: 0,
+                maxbdens: 3000,
+                mindist: 0,
+                maxdist: 241000,
+                mobile: 1
             };
 
             var currentSelection = null;
@@ -268,55 +292,147 @@
             // measuring is used in leaflet.measure.js
             var measuring = false; // ! check dependencies before deleting this variable
 
-            var buildingSlider = document.getElementById('sliderpop');
+            var buildingSlider = document.getElementById('sliderbuild');
+            var bdensitySlider = document.getElementById('sliderbdens');
+            var distanceSlider = document.getElementById('sliderdist');
+            var areaSlider = document.getElementById('sliderarea');
+
             var input0 = document.getElementById('input-with-keypress-0');
             var input1 = document.getElementById('input-with-keypress-1');
-            var inputs = [input0, input1];
+            var input2 = document.getElementById('input-with-keypress-2');
+            var input3 = document.getElementById('input-with-keypress-3');
+            var input4 = document.getElementById('input-with-keypress-4');
+            var input5 = document.getElementById('input-with-keypress-5');
+            var input6 = document.getElementById('input-with-keypress-6');
+            var input7 = document.getElementById('input-with-keypress-7');
 
+            var inputs_build = [input0, input1];
+            var inputs_bdens = [input2, input3];
+            var inputs_dist = [input4, input5];
+            var inputs_area = [input6, input7];
+
+            // create sliders and connect to input fields and functions
+            //buildings
             noUiSlider.create(buildingSlider, {
                 start: [currentfilter.minbuild, currentfilter.maxbuild],
                 connect: true,
-                //direction: 'rtl',
-                //tooltips: [true, wNumb({ decimals: 1 })],
                 range: {
                     'min': [0, 1],
-                    'max': 1337
+                    'max': currentfilter.maxbuild
                 }
             });
-
             buildingSlider.noUiSlider.on('update', function( values, handle ) {
-                inputs[handle].value = values[handle];
+                inputs_build[handle].value = values[handle];
             });
-
             buildingSlider.noUiSlider.on('change', function( values, handle ) {
-                //alert(inputs[handle].value + "funktioniert wohl auch mit overloading");
                 currentfilter.minbuild = values[0];
                 currentfilter.maxbuild = values[1];
                 map.fireEvent("filterchange", currentfilter);
             });
-
             buildingSlider.noUiSlider.on('set', function( values, handle ) {
                 currentfilter.minbuild = values[0];
                 currentfilter.maxbuild = values[1];
                 map.fireEvent("filterchange", currentfilter);
             });
 
-
-            function setSliderHandle(i, value) {
+            function setBuildingsHandle(i, value) {
                 var r = [null,null];
                 r[i] = value;
                 buildingSlider.noUiSlider.set(r);
             }
 
+            //building-density
+            noUiSlider.create(bdensitySlider, {
+                start: [currentfilter.minbdens, currentfilter.maxbdens],
+                connect: true,
+                range: {
+                    'min': [0, 1],
+                    'max': currentfilter.maxbdens
+                }
+            });
+            bdensitySlider.noUiSlider.on('update', function( values, handle ) {
+                inputs_bdens[handle].value = values[handle];
+            });
+            bdensitySlider.noUiSlider.on('change', function( values, handle ) {
+                currentfilter.minbdens = values[0];
+                currentfilter.maxbdens = values[1];
+                map.fireEvent("filterchange", currentfilter);
+            });
+            bdensitySlider.noUiSlider.on('set', function( values, handle ) {
+                currentfilter.minbdens = values[0];
+                currentfilter.maxbdens = values[1];
+                map.fireEvent("filterchange", currentfilter);
+            });
+            function setBDensHandle(i, value) {
+                var r = [null,null];
+                r[i] = value;
+                bdensitySlider.noUiSlider.set(r);
+            }
+
+
+            //grid distance
+            noUiSlider.create(distanceSlider, {
+                start: [currentfilter.mindist, currentfilter.maxdist],
+                connect: true,
+                range: {
+                    'min': [0, 1],
+                    'max': currentfilter.maxdist
+                }
+            });
+            distanceSlider.noUiSlider.on('update', function( values, handle ) {
+                inputs_dist[handle].value = values[handle];
+            });
+            distanceSlider.noUiSlider.on('change', function( values, handle ) {
+                currentfilter.mindist = values[0];
+                currentfilter.maxdist = values[1];
+                map.fireEvent("filterchange", currentfilter);
+            });
+            distanceSlider.noUiSlider.on('set', function( values, handle ) {
+                currentfilter.mindist = values[0];
+                currentfilter.maxdist = values[1];
+                map.fireEvent("filterchange", currentfilter);
+            });
+            function setDistHandle(i, value) {
+                var r = [null,null];
+                r[i] = value;
+                distanceSlider.noUiSlider.set(r);
+            }
+
+
+            //grid area
+            noUiSlider.create(areaSlider, {
+                start: [currentfilter.minarea, currentfilter.maxarea],
+                connect: true,
+                range: {
+                    'min': [0, 0.02],
+                    'max': currentfilter.maxarea
+                }
+            });
+            areaSlider.noUiSlider.on('update', function( values, handle ) {
+                inputs_area[handle].value = values[handle];
+            });
+            areaSlider.noUiSlider.on('change', function( values, handle ) {
+                currentfilter.minarea = values[0];
+                currentfilter.maxarea = values[1];
+                map.fireEvent("filterchange", currentfilter);
+            });
+            areaSlider.noUiSlider.on('set', function( values, handle ) {
+                currentfilter.minarea = values[0];
+                currentfilter.maxarea = values[1];
+                map.fireEvent("filterchange", currentfilter);
+            });
+            function setAreaHandle(i, value) {
+                var r = [null,null];
+                r[i] = value;
+                areaSlider.noUiSlider.set(r);
+            }
+
             // Listen to keydown events on the input field.
-            inputs.forEach(function(input, handle) {
-
+            inputs_build.forEach(function(input, handle) {
                 input.addEventListener('change', function(){
-                    setSliderHandle(handle, this.value);
+                    setBuildingsHandle(handle, this.value);
                 });
-
                 input.addEventListener('keydown', function( e ) {
-
                     var values = buildingSlider.noUiSlider.get();
                     var value = Number(values[handle]);
                     // [[handle0_down, handle0_up], [handle1_down, handle1_up]]
@@ -324,13 +440,12 @@
                     // [down, up]
                     var step = steps[handle];
                     var position;
-
                     // 13 is enter,
                     // 38 is key up,
                     // 40 is key down.
                     switch ( e.which ) {
                         case 13:
-                            setSliderHandle(handle, this.value);
+                            setBuildingsHandle(handle, this.value);
                             break;
                         case 38:
                             // Get step to go increase slider value (up)
@@ -341,7 +456,7 @@
                             }
                             // null = edge of slider
                             if ( position !== null ) {
-                                setSliderHandle(handle, value + position);
+                                setBuildingsHandle(handle, value + position);
                             }
 
                             break;
@@ -351,7 +466,137 @@
                                 position = 1;
                             }
                             if ( position !== null ) {
-                                setSliderHandle(handle, value - position);
+                                setBuildingsHandle(handle, value - position);
+                            }
+                            break;
+                    }
+                });
+            });
+
+            // Listen to keydown events on the input field.
+            inputs_bdens.forEach(function(input, handle) {
+                input.addEventListener('change', function(){
+                    setBDensHandle(handle, this.value);
+                });
+                input.addEventListener('keydown', function( e ) {
+                    var values = bdensitySlider.noUiSlider.get();
+                    var value = Number(values[handle]);
+                    // [[handle0_down, handle0_up], [handle1_down, handle1_up]]
+                    var steps = bdensitySlider.noUiSlider.steps();
+                    // [down, up]
+                    var step = steps[handle];
+                    var position;
+                    // 13 is enter,
+                    // 38 is key up,
+                    // 40 is key down.
+                    switch ( e.which ) {
+                        case 13:
+                            setBDensHandle(handle, this.value);
+                            break;
+                        case 38:
+                            // Get step to go increase slider value (up)
+                            position = step[1];
+                            // false = no step is set
+                            if ( position === false ) {
+                                position = 1;
+                            }
+                            // null = edge of slider
+                            if ( position !== null ) {
+                                setBDensHandle(handle, value + position);
+                            }
+
+                            break;
+                        case 40:
+                            position = step[0];
+                            if ( position === false ) {
+                                position = 1;
+                            }
+                            if ( position !== null ) {
+                                setBDensHandle(handle, value - position);
+                            }
+                            break;
+                    }
+                });
+            });
+
+
+            // Listen to keydown events on the input field.
+            inputs_dist.forEach(function(input, handle) {
+                input.addEventListener('change', function(){
+                    setDistHandle(handle, this.value);
+                });
+                input.addEventListener('keydown', function( e ) {
+                    var values = distanceSlider.noUiSlider.get();
+                    var value = Number(values[handle]);
+                    // [[handle0_down, handle0_up], [handle1_down, handle1_up]]
+                    var steps = distanceSlider.noUiSlider.steps();
+                    // [down, up]
+                    var step = steps[handle];
+                    var position;
+                    // 13 is enter,
+                    // 38 is key up,
+                    // 40 is key down.
+                    switch ( e.which ) {
+                        case 13:
+                            setDistHandle(handle, this.value);
+                            break;
+                        case 38:
+                            // Get step to go increase slider value (up)
+                            position = step[1];
+                            // false = no step is set
+                            if ( position === false ) {
+                                position = 1;
+                            }
+                            // null = edge of slider
+                            if ( position !== null ) {
+                                setDistHandle(handle, value + position);
+                            }
+
+                            break;
+                        case 40:
+                            position = step[0];
+                            if ( position === false ) {
+                                position = 1;
+                            }
+                            if ( position !== null ) {
+                                setDistHandle(handle, value - position);
+                            }
+                            break;
+                    }
+                });
+            });
+
+            // Listen to keydown events on the input field.
+            inputs_area.forEach(function(input, handle) {
+                input.addEventListener('change', function(){
+                    setAreaHandle(handle, this.value);
+                });
+                input.addEventListener('keydown', function( e ) {
+                    var values = areaSlider.noUiSlider.get();
+                    var value = Number(values[handle]);
+                    var steps = areaSlider.noUiSlider.steps();
+                    var step = steps[handle];
+                    var position;
+                    switch ( e.which ) {
+                        case 13:
+                            setAreaHandle(handle, this.value);
+                            break;
+                        case 38:
+                            position = step[1];
+                            if ( position === false ) {
+                                position = 1;
+                            }
+                            if ( position !== null ) {
+                                setAreaHandle(handle, value + position);
+                            }
+                            break;
+                        case 40:
+                            position = step[0];
+                            if ( position === false ) {
+                                position = 1;
+                            }
+                            if ( position !== null ) {
+                                setAreaHandle(handle, value - position);
                             }
                             break;
                     }
@@ -475,7 +720,6 @@
                             fillOpacity: 0.8,
                         });
                     }
-
             });
 
 
@@ -610,7 +854,7 @@
                                                   '<tr><td align="right"><b>Density</b>:</td><td>'+properties.buid_dens+'</td></tr>' +
                                                   '<tr><td align="right"><b>Distance to Grid</b>:</td><td>'+Math.round(properties.distance) + ' m' + '</td></tr>' +
                                                   '<tr><td align="right"><b>Priority Class</b>:</td><td>'+properties.prio_class+'</td></tr>' +
-                                                  '<tr><td align="right"><b>Download Buildings</b>:</td><td>' + '<a href="' + downloadstring + '"> Link<a/>' +'</td></tr>' +
+                                                  '<tr><td align="right"><b>Download Buildings</b>:</td><td>' + '<a href="' + downloadstring + '" > Link<a/>' +'</td></tr>' +
                                                   '</table>';
                             this._div.innerHTML
                         };
@@ -682,7 +926,13 @@
                 let f = vt[vtkey]._features;
                 for (let fkey in f) {
                     let prop = f[fkey].feature.properties;
-                    if (prop.building >= currentfilter.minbuild && prop.building <= currentfilter.maxbuild){
+                    if (
+                            (prop.building >= currentfilter.minbuild && prop.building <= currentfilter.maxbuild) &&
+                            (prop.buid_dens >= currentfilter.minbdens && prop.buid_dens <= currentfilter.maxbdens) &&
+                            (prop.distance >= currentfilter.mindist && prop.distance <= currentfilter.maxdist) &&
+                            (prop.area_km2 >= currentfilter.minarea && prop.area_km2 <= currentfilter.maxarea) 
+                    )
+                    {
                         this.setFeatureStyle(prop.ID, normalStyle);
                     }
                     else {
@@ -712,7 +962,13 @@
             for (let i = 0; i < centroids.features.length; i++) {
                 let point = centroids.features[i];
                 //alert(point.properties.building)
-                if (point.properties.building >= currentfilter.minbuild && point.properties.building <= currentfilter.maxbuild) {
+                if (
+                        point.properties.building >= currentfilter.minbuild && point.properties.building <= currentfilter.maxbuild &&
+                        point.properties.buid_dens >= currentfilter.minbdens && point.properties.buid_dens <= currentfilter.maxbdens &&
+                        point.properties.distance >= currentfilter.mindist && point.properties.distance <= currentfilter.maxdist &&
+                        point.properties.area_km2 >= currentfilter.minarea && point.properties.area_km2 <= currentfilter.maxarea 
+                )
+                    {
                     let info = point.properties.building;
                     //alert(point.properties.lat + ' ' + point.properties.lon + ' ' + info);
                     //let marker = L.marker(L.latLng(point.properties.lon, point.properties.lat));
