@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="css/leaflet.css"/>
         <link rel="stylesheet" href="css/leaflet.measure.css" />
         <link rel="stylesheet" href="css/leaflet-sidebar.min.css" />
-        <link rel="stylesheet" href="css/will-change-memory.css">
+
 
         <!-- Stylesheet for nouislider -->
         <link rel="stylesheet" href="css/nouislider.min.css" />
@@ -70,9 +70,11 @@
         <div class="leaflet-sidebar-pane active" id="home">
             <h1 class="leaflet-sidebar-header">
                  Title next to Sidebar Icon
-                <div class="leaflet-sidebar-close"><i class="fa fa-times"></i></div>
+                <div class="leaflet-sidebar-close">
+                    <i class="fa fa-times"></i>
+                </div>
             </h1>
-            <p> html content in paragraph. You may include an image as well:</p>
+            <p> This tool was developed to support private and public actors in Zambia to quickly and accurately prioritize villages by their potential for off-grid electrification, based on information such as population density, distance to grid, solar resource and others. </p>
 
             <p class="license"><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
             <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" />
@@ -83,11 +85,14 @@
             <h1 class="leaflet-sidebar-header">Layers<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
             <h3>Select Basemap Layer </h3>
             <img class="basemap_preview" id="aerial_preview" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/6/34/36.png" onclick="SelectBasemap('Esri Aerial')" />
-            Aerial Images (Esri) <br>
+                Aerial Images (Esri) 
+                <br>
             <img class="basemap_preview" id="osm_preview" src="https://a.tile.openstreetmap.de/tiles/osmde/6/36/34.png" onclick="SelectBasemap('OpenStreetMap')"/>
-            OpenStreetMap <br>
+                OpenStreetMap 
+                <br>
             <img class="basemap_preview" id="topo_preview" src="https://a.tile.opentopomap.org/6/36/34.png" onclick="SelectBasemap('OpenTopoMap')"/>
-            OpenTopoMap <br>
+                OpenTopoMap 
+                <br>
             </p>
 
 
@@ -233,7 +238,7 @@
                     <input checked type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Cluster Accumulations"/>
                     <span class="slider"></span>
                 </label> Cluster Accumulations
-                <br><br>
+                <br><br><br>
 
 
                 <script>
@@ -257,12 +262,12 @@
                 </script>
 
 
-            <h1 class="leaflet-sidebar-header">
-                 Filters Submenu
-                <div class="leaflet-sidebar-close"><i class="fa fa-times"></i></div>
+            <h1 class="leaflet-sidebar-subheader">
+                <i class="fa fa-filter" style="font-size:16px"> </i>
+                 Filters
             </h1>
 
-               <h3>Mobile Coverage</h3> 
+               <h3 class="notsubheader">Mobile Coverage</h3> 
                 <div id="cellcoverage"></div>
                 <form>
                     <select id="selectcellcoverage" onChange="cellfilter()">

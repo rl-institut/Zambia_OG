@@ -13,6 +13,16 @@ body {
  .leaflet-sidebar-header, .leaflet-sidebar-tabs > li.active, .leaflet-sidebar-tabs > ul > li.active {
      background-color: #808080;
 }
+ .leaflet-sidebar-subheader{
+    margin:-10px -20px 0;
+    height:25px;
+    padding:0px 20px;
+    line-height:25px;
+    font-size:14.4pt;
+    color:#fff;
+    background-color:#808080
+} 
+
  .switch {
      position: relative;
      display: inline-block;
