@@ -92,6 +92,22 @@
 
 
             <script>
+
+            var currentfilter = {
+                minbuild: 0,
+                maxbuild: 6000,
+                minarea: 0.0,
+                maxarea: 10.0,
+                minbdens: 0,
+                maxbdens: 3000,
+                mindist: 0,
+                maxdist: 241000,
+                mobile: 1
+            };
+
+            var currentSelection = null;
+
+
             function url_from_coords(zoom, coords) {
                xtile = long2tile(coords.lng,zoom);
                ytile = long2tile(coords.lat * -1,zoom);
@@ -246,20 +262,24 @@
                 <div class="leaflet-sidebar-close"><i class="fa fa-times"></i></div>
             </h1>
 
-               <h3>Cell Coverage</h3> 
+               <h3>Mobile Coverage</h3> 
                 <div id="cellcoverage"></div>
                 <form>
                     <select id="selectcellcoverage" onChange="cellfilter(this)">
                         <option value="nofilter">Show all</option>
-                        <option value="1">Has Cell Coverage</option>
-                        <option value="0">No Cell Coverage</option>>
+                        <option value= "1">Has Mobile Coverage</option>
+                        <option value= "0">No Info on Mobile Coverage</option>>
                     </select>
                     <br>
                 </form>
 
                 <script>
                     function cellfilter(elem){
-                        alert("selected " + document.getElementById('selectcellcoverage'));
+                        currentfilter.mobile = document.getElementById('selectcellcoverage').value;
+                        if (document.getElementById('selectcellcoverage').value == 0) {
+                            currentfilter.mobile = null;
+                        }
+                        map.fireEvent("filterchange", currentfilter);
                     }
                 </script>
 
@@ -299,19 +319,6 @@
              </div>
 
             <script>
-            var currentfilter = {
-                minbuild: 0,
-                maxbuild: 6000,
-                minarea: 0.0,
-                maxarea: 10.0,
-                minbdens: 0,
-                maxbdens: 3000,
-                mindist: 0,
-                maxdist: 241000,
-                mobile: 1
-            };
-
-            var currentSelection = null;
             
             // measuring is used in leaflet.measure.js
             var measuring = false; // ! check dependencies before deleting this variable
@@ -954,7 +961,8 @@
                             (prop.building >= currentfilter.minbuild && prop.building <= currentfilter.maxbuild) &&
                             (prop.buid_dens >= currentfilter.minbdens && prop.buid_dens <= currentfilter.maxbdens) &&
                             (prop.distance >= currentfilter.mindist && prop.distance <= currentfilter.maxdist) &&
-                            (prop.area_km2 >= currentfilter.minarea && prop.area_km2 <= currentfilter.maxarea) 
+                            (prop.area_km2 >= currentfilter.minarea && prop.area_km2 <= currentfilter.maxarea) &&
+                            ((currentfilter.mobile != "nofilter" && currentfilter.mobile != prop.mobile_cov) || currentfilter.mobile == "nofilter" )
                     )
                     {
                         this.setFeatureStyle(prop.ID, normalStyle);
@@ -964,7 +972,7 @@
                         this.setFeatureStyle(prop.ID, this.hiddenstyle);
                     }
                     // when the map is panned or zoomed, the selected feature is newly styled 
-                    // according to the filter parameters. In order to keen the object highlighted
+                    // according to the filter parameters. In order to keep the object highlighted
                     // it is called and restyled again here.  
                     if (prop.ID == currentSelection) 
                     {
@@ -990,7 +998,8 @@
                         point.properties.building >= currentfilter.minbuild && point.properties.building <= currentfilter.maxbuild &&
                         point.properties.buid_dens >= currentfilter.minbdens && point.properties.buid_dens <= currentfilter.maxbdens &&
                         point.properties.distance >= currentfilter.mindist && point.properties.distance <= currentfilter.maxdist &&
-                        point.properties.area_km2 >= currentfilter.minarea && point.properties.area_km2 <= currentfilter.maxarea 
+                        point.properties.area_km2 >= currentfilter.minarea && point.properties.area_km2 <= currentfilter.maxarea &&
+                        ((currentfilter.mobile != "nofilter" && point.properties.mobile_cov != currentfilter.mobile) || currentfilter.mobile == "nofilter" )
                 )
                     {
                     let info = point.properties.building;
