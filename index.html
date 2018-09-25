@@ -993,7 +993,6 @@
             let markerList = [];
             for (let i = 0; i < centroids.features.length; i++) {
                 let point = centroids.features[i];
-                //alert(point.properties.building)
                 if (
                         point.properties.building >= currentfilter.minbuild && point.properties.building <= currentfilter.maxbuild &&
                         point.properties.buid_dens >= currentfilter.minbdens && point.properties.buid_dens <= currentfilter.maxbdens &&
@@ -1003,8 +1002,6 @@
                 )
                     {
                     let info = point.properties.building;
-                    //alert(point.properties.lat + ' ' + point.properties.lon + ' ' + info);
-                    //let marker = L.marker(L.latLng(point.properties.lon, point.properties.lat));
                     let orange =  L.circleMarker([point.properties.lon, point.properties.lat], {
                                    radius: 8,
                                    fillColor: "#ff7800",
@@ -1017,7 +1014,6 @@
                 }
             }
             this.addLayers(markerList);
-            map.addLayer(this);
         };
 
 
@@ -1029,10 +1025,6 @@
         map.on("click", function() {
             vecTileLayer.clearHighlight();
         });
-
-//        map.on("popupclose", function() {
-//            vecTileLayer.clearHighlight();
-//        });
 
  
         var sidebar = L.control.sidebar('sidebar', {
