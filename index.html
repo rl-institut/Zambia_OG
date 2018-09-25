@@ -102,7 +102,7 @@
                 maxbdens: 3000,
                 mindist: 0,
                 maxdist: 241000,
-                mobile: 1
+                mobile: "nofilter"
             };
 
             var currentSelection = null;
@@ -139,7 +139,7 @@
                         }
                     }
                 map.addLayer(baseMaps[input]);
-                baseMaps[input].bringToBack();
+                //baseMaps[input].bringToBack();
             }
 
                 </script>
@@ -195,7 +195,7 @@
                         map.addLayer(ghi);
                       }
                 }
-        </script>
+                </script>
 
             <h3>Select Overlay Information </h3>
             <label class="switch">
@@ -265,16 +265,16 @@
                <h3>Mobile Coverage</h3> 
                 <div id="cellcoverage"></div>
                 <form>
-                    <select id="selectcellcoverage" onChange="cellfilter(this)">
+                    <select id="selectcellcoverage" onChange="cellfilter()">
                         <option value="nofilter">Show all</option>
                         <option value= "1">Has Mobile Coverage</option>
-                        <option value= "0">No Info on Mobile Coverage</option>>
+                        <option selected value= "0">No Info on Mobile Coverage</option>>
                     </select>
                     <br>
                 </form>
 
                 <script>
-                    function cellfilter(elem){
+                    function cellfilter(){
                         currentfilter.mobile = document.getElementById('selectcellcoverage').value;
                         if (document.getElementById('selectcellcoverage').value == 0) {
                             currentfilter.mobile = null;
@@ -1104,16 +1104,14 @@
 
             map.on('zoomend', function() {
                 RefreshPreview();
-            if (map.getZoom() >= 8) {
-                //alert(map.getZoom());
-                map.removeLayer(borders);
-                document.getElementById('Borders').checked = false; 
-            }
-            if (map.getZoom() <= 8) {
-                map.addLayer(borders);
-                document.getElementById('Borders').checked = true; 
-            }
-            //map.fireEvent("filterchange", currentfilter);
+                if (map.getZoom() >= 8) {
+                    map.removeLayer(borders);
+                    document.getElementById('Borders').checked = false; 
+                }
+                if (map.getZoom() <= 8) {
+                    map.addLayer(borders);
+                    document.getElementById('Borders').checked = true; 
+                }
             });
             map.on('moveend', function() {
                 RefreshPreview();
@@ -1122,7 +1120,7 @@
                 map.fireEvent("mapmove", currentfilter);
             });
 
-            map.on("layeradd",function (){vecTileLayer.bringToFront();});
+            //map.on("layeradd",function (){vecTileLayer.bringToFront();});
 
             map.addEventListener("filterchange", function(filter) {
                 vecTileLayer.filter(currentfilter);
