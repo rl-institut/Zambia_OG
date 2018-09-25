@@ -140,11 +140,10 @@
                     if (map.hasLayer(baseMaps[maps[i]]) && maps[i] != input)
                         {
                         map.removeLayer(baseMaps[maps[i]]);
-                        //alert(maps[i]);
                         }
                     }
                 map.addLayer(baseMaps[input]);
-                //baseMaps[input].bringToBack();
+                baseMaps[input].bringToBack();
             }
 
                 </script>
@@ -198,6 +197,10 @@
                   else
                       {
                         map.addLayer(ghi);
+                        if(document.getElementById('toggle_vl').checked)
+                        {
+                            
+                        }
                       }
                 }
                 </script>
@@ -272,8 +275,8 @@
                 <form>
                     <select id="selectcellcoverage" onChange="cellfilter()">
                         <option value="nofilter">Show all</option>
-                        <option value= "1">Has Mobile Coverage</option>
-                        <option selected value= "0">No Info on Mobile Coverage</option>>
+                        <option value= "1"> ✓ Has Mobile Coverage</option>
+                        <option value= "0"> ✕ No Info on Mobile Coverage</option>>
                     </select>
                     <br>
                 </form>
@@ -745,7 +748,7 @@
                     return feature.properties && feature.properties.style;
                 },
                 // uncomment below to allow popups for this layer
-                 onEachFeature: onEachFeature,
+                 //onEachFeature: onEachFeature,
 
                     pointToLayer: function (feature, latlng) {
                         return L.circleMarker(latlng, {
@@ -1125,7 +1128,7 @@
                 map.fireEvent("mapmove", currentfilter);
             });
 
-            //map.on("layeradd",function (){vecTileLayer.bringToFront();});
+            map.on("layeradd",function (){vecTileLayer.bringToFront();});
 
             map.addEventListener("filterchange", function(filter) {
                 vecTileLayer.filter(currentfilter);
