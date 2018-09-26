@@ -505,6 +505,7 @@ let aerial = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/W
 
 let ghi = L.tileLayer("https://wam.rl-institut.de:84/data/ghi/{z}/{x}/{y}.png", {
     maxZoom: 19,
+    maxNativeZoom: 12,
     attribution: '&copy; <a href="www.http://globalsolaratlas.info/">Global Solar Atlas</a>'
 });   // .addTo(map) loads this as the initial basemap    ;
 
