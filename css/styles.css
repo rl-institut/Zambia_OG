@@ -13,7 +13,7 @@ body {
  .leaflet-sidebar-header, .leaflet-sidebar-tabs > li.active, .leaflet-sidebar-tabs > ul > li.active {
      background-color: #808080;
 }
- .leaflet-sidebar-subheader{
+ .sidebar_h3{
     margin:-10px -20px 0;
     height:25px;
     padding:0px 20px;
@@ -67,7 +67,7 @@ body {
      -ms-transform: translateX(13px);
      transform: translateX(13px);
 }
-.basemap_preview{
+.minimap__img{
     width:64px;
     height:64px;
     border-width:0; 

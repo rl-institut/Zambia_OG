@@ -239,7 +239,7 @@ noUiSlider.create(distanceSlider, {
     start: [currentfilter.mindist, currentfilter.maxdist],
     connect: true,
     range: {
-        'min': [0, 1],
+        'min': [0, 500],
         'max': currentfilter.maxdist
     }
 });
@@ -559,7 +559,7 @@ var vecTileLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zam
         let properties = e.layer.properties;
         if (properties.ID !== undefined) {
             var bbox = (properties.bb_south + ',' + properties.bb_west + ',' + properties.bb_north + ',' + properties.bb_east);
-            downloadstring =('http://overpass-api.de/api/interpreter?data=(node[building=yes](' + bbox + ');way[building=yes](' + bbox + '););(._;>;);out meta;');
+            downloadstring =('http://overpass-api.de/api/interpreter?data=(node[building](' + bbox + ');way[building](' + bbox + '););(._;>;);out meta;');
             // disableClickPropagation enables selecting and copying of text in control element
             info.onAdd = function (map) {
                 this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
