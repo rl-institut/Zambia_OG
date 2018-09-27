@@ -5,8 +5,9 @@
     <title>Zambia Map</title>
 
     <!-- font awesome offers symbols/icons. used e.g. as symbols for the tabs on the sidebar -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" />
+    <!--link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" />
     <!-- Stylesheet for Leaflet icons, fonts etc -->
+    <link href="css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="css/leaflet.css"/>
     <link rel="stylesheet" href="css/leaflet.measure.css" />
     <link rel="stylesheet" href="css/leaflet-sidebar.min.css" />
@@ -43,89 +44,122 @@
                     <i class="fa fa-times"></i>
                 </div>
             </h1>
-            <p> This tool was developed to support private and public actors in Zambia to quickly and accurately prioritize villages by their potential for off-grid electrification, based on information such as population density, distance to grid, solar resource and others. </p>
-
+            <p class="paragraph"> This tool was developed to support private and public actors in Zambia to quickly and accurately prioritize villages by their potential for off-grid electrification, based on information such as population density, distance to grid, solar resource and others. </p>
         </div>
 
         <div class="leaflet-sidebar-pane" id="layers">
             <h1 class="leaflet-sidebar-header">Layers<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-            <h3>Select Basemap Layer </h3>
-                <img class="basemap_preview" id="aerial_preview" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/6/34/36.png" onclick="SelectBasemap('Esri Aerial')" />
-                    Aerial Images (Esri)
+            <h2 class="sidebar_h2">  Select Basemap Layer </h2>
+
+                <div class="minimap">
+                    <img class="minimap__img" id="aerial_preview" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/6/34/36.png" onclick="SelectBasemap('Esri Aerial')" />
+                    <p class="minimap__legend"> Aerial Images (Esri) </p>
+                </div>
                 <br>
-                <img class="basemap_preview" id="osm_preview" src="https://a.tile.openstreetmap.de/tiles/osmde/6/36/34.png" onclick="SelectBasemap('OpenStreetMap')"/>
-                    OpenStreetMap
+                <div class="minimap">
+                    <img class="minimap__img" id="osm_preview" src="https://a.tile.openstreetmap.de/tiles/osmde/6/36/34.png" onclick="SelectBasemap('OpenStreetMap')"/>
+                    <p class="minimap__legend"> OpenStreetMap </p>
+                </div>
                 <br>
-                <img class="basemap_preview" id="topo_preview" src="https://a.tile.opentopomap.org/6/36/34.png" onclick="SelectBasemap('OpenTopoMap')"/>
-                    OpenTopoMap
+                <div class="minimap">
+                    <img class="minimap__img" id="topo_preview" src="https://a.tile.opentopomap.org/6/36/34.png" onclick="SelectBasemap('OpenTopoMap')"/>
+                    <p class="minimap__legend">OpenTopoMap </p>
+                </div>
                 <br>
 
-            <h3>Select Raster Overlays</h3>
-                <label class="switch">
-                    <input name="" type="checkbox" onclick="toggleGHI()" id="toggle_ghi"/>
-                    <span class="slider"></span>
-                </label> Solar Irradiation
-
-
-            <h3>Select Overlay Information </h3>
-                <label class="switch">
-                    <input checked type="checkbox" onclick="toggleVecTileLayer()" id="toggle_vl"/>
-                    <span class="slider"></span>
-                </label> Clusters
-                <br><br>
-                <label class="switch">
-                    <input type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Borders"/>
-                    <span class="slider"></span>
-                </label> Borders
-                <br><br>
-                <label class="switch">
-                    <input checked type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Cluster Accumulations"/>
-                    <span class="slider"></span>
-                </label> Cluster Accumulations
-                <br><br><br>
-
-            <h1 class="leaflet-sidebar-subheader">
-                <i class="fa fa-filter" style="font-size:16px"> </i>
-                 Filters
-            </h1>
-
-            <h3 class="notsubheader">Mobile Coverage</h3>
-                <div id="cellcoverage"></div>
-                <form>
-                    <select id="selectcellcoverage" onChange="cellfilter()">
-                        <option value="nofilter">Show all</option>
-                        <option value= "1"> ✓ Has Mobile Coverage</option>
-                        <option value= "0"> ✕ No Info on Mobile Coverage</option>
-                    </select>
-                </form>
+            <h2 class="sidebar_h2"> Select Raster Overlays</h2>
+                <div class="togglebutton">
+                    <label class="switch">
+                        <input name="" type="checkbox" onclick="toggleGHI()" id="toggle_ghi"/>
+                        <span class="slider"></span>
+                    </label> 
+                    <p class="togglebutton__p"> Solar Irradiation</p>
+                </div>
+            <h2 class="sidebar_h2"> Select Overlay Information </h2>
+                <div class="togglebutton">
+                    <label class="switch">
+                        <input checked type="checkbox" onclick="toggleVecTileLayer()" id="toggle_vl"/>
+                        <span class="slider"></span>
+                    </label> 
+                    <p class="togglebutton__p"> Clusters</p>
+                </div>
+                <div class="togglebutton">
+                    <label class="switch">
+                        <input type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Borders"/>
+                        <span class="slider"></span>
+                    </label> 
+                    <p class="togglebutton__p"> Borders</p>
+                </div>
+                <div class="togglebutton">
+                    <label class="switch">
+                        <input checked type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Cluster Accumulations"/>
+                        <span class="slider"></span>
+                    </label> 
+                    <p class="togglebutton__p"> Cluster Accumulations</p>
+                </div>
+                    <br>
+            <h3 class="sidebar_h3">
+                <i class="fa fa-filter" style="font-size:16px"> Filters </i>
+                Filters
+            </h3>
+            <h2 class="sidebar_h2"> Mobile Coverage</h2>
+                <div class="dropdown" id="cellcoverage">
+                    <form class="dropdown__form">
+                        <select class="dropdown__select" id="selectcellcoverage" onChange="cellfilter()">
+                            <option value="nofilter">Show all</option>
+                            <option value= "1"> ✓ Has Mobile Coverage</option>
+                            <option value= "0"> ✕ No Info on Mobile Coverage</option>
+                        </select>
+                    </form>
+                </div>
                <br>
-           <h3>Buildings</h3>
-                <div id="sliderbuild"></div> <br>
-                <div>
-                    <input type="number" id="input-with-keypress-0" name="range" />
-                    <input type="number" id="input-with-keypress-1" name="range" />
+           <h2 class="sidebar_h2">Buildings</h2>
+                <div class="filter">
+                    <div class="filter__slider" id="sliderbuild"></div> <br>
+                    <div class="filter__input">
+                        <input type="number" id="input-with-keypress-0" name="range" />
+                        <input type="number" id="input-with-keypress-1" name="range" />
+                    </div>
                 </div>
 
-           <h3>Building Density</h3>
-               <div id="sliderbdens"></div> <br>
-               <div>
-                   <input type="number" id="input-with-keypress-2" name="range" />
-                   <input type="number" id="input-with-keypress-3" name="range" />
+           <h2 class="sidebar_h2">Building Density</h2>
+                <div class="filter">
+                    <div class="filter__slider" id="sliderbdens"></div> <br>
+                    <div class="filter__input">
+                        <input type="number" id="input-with-keypress-2" name="range" />
+                        <input type="number" id="input-with-keypress-3" name="range" />
+                    </div>
+                </div>
+
+           <h2 class="sidebar_h2">Distance to Grid (m)</h2>
+                <div class="filter">
+                    <div class="filter__slider" id="sliderdist"></div> <br>
+                    <div class="filter__input">
+                        <input type="number" id="input-with-keypress-4" name="range" />
+                        <input type="number" id="input-with-keypress-5" name="range" />
+                    </div>
+                </div>
+
+           <h2 class="sidebar_h2">Area (km²)</h2>
+                <div class="filter">
+                    <div id="sliderarea"></div> <br>
+                    <div class="filter__input">
+                        <input type="number" id="input-with-keypress-6" name="range" step="0.02"/>
+                        <input type="number" id="input-with-keypress-7" name="range" step="0.02"/>
+                   </div>
                </div>
+           </div>
 
-           <h3>Distance to Grid (m)</h3>
-                <div id="sliderdist"></div> <br>
-                <div>
-                    <input type="number" id="input-with-keypress-4" name="range" />
-                    <input type="number" id="input-with-keypress-5" name="range" />
-                </div>
-
-           <h3>Area (km²)</h3>
-                <div id="sliderarea"></div> <br>
-                <div>
-                    <input type="number" id="input-with-keypress-6" name="range" step="0.02"/>
-                    <input type="number" id="input-with-keypress-7" name="range" step="0.02"/>
-                </div>
+        <div class="leaflet-sidebar-pane" id="download">
+            <h1 class="leaflet-sidebar-header">
+                Download
+                <div class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></div>
+            </h1>
+            <p class="paragraph"> You may download the data behind this map:</p>
+            <p class="paragraph"> Cluster points with metadata <a href="data/centroids.geojson" target="_blank" download> ⇩download</a>.</p>
+            <p class="paragraph"> Cluster shapes with metadata <a href="data/clusters.geojson" target="_blank" download >⇩download</a>.</p>
+            <p class="paragraph"> Borders shapes with metadata <a href="data/provinces.geojson" target="_blank" download> ⇩download</a>.</p>
+            <p class="paragraph"> Solar resource data obtained from the Global Solar Atlas, owned by the World Bank Group and provided by Solargis. Raster data for the solar irradiation layer specificly were taken from  <a href="http://globalsolaratlas.info/downloads/zambia" target="_blank">↪here</a>. Their Data are made available for reuse under CC-BY-license. A copyright notice is available <a href="http://globalsolaratlas.info/copyright" target="_blank">↪here</a>.</p>
         </div>
 
         <div class="leaflet-sidebar-pane" id="about">
@@ -133,21 +167,11 @@
                  About the map
                 <div class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></div>
             </h1>
-            <p>Source code for this web map can be found <a href="https://github.com/rl-institut/Zambia_OG" target="_blank">here</a>.</p>
+            <p class="paragraph">Source code for this web map can be found <a href="https://github.com/rl-institut/Zambia_OG" target="_blank">here</a>.</p>
             <p class="license"><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.</p>
         </div>
 
-        <div class="leaflet-sidebar-pane" id="download">
-            <h1 class="leaflet-sidebar-header">
-                Download
-                <div class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></div>
-            </h1>
-            <p>You may download the data behind this map:</p>
-            <p>Cluster points with metadata <a href="data/centroids.geojson" target="_blank" download> ⇩download</a>.</p>
-            <p>Cluster shapes with metadata <a href="data/clusters.geojson" target="_blank" download >⇩download</a>.</p>
-            <p>Borders shapes with metadata <a href="data/provinces.geojson" target="_blank" download> ⇩download</a>.</p>
-            <p>Solar resource data obtained from the Global Solar Atlas, owned by the World Bank Group and provided by Solargis. Raster data for the solar irradiation layer specificly were taken from  <a href="http://globalsolaratlas.info/downloads/zambia" target="_blank">here</a>. Data are made available for reuse under CC-BY-license. A copyright notice is available <a href="http://globalsolaratlas.info/copyright" target="_blank">here</a>.</p>
-        </div>
+
 
     </div>
 </div>
