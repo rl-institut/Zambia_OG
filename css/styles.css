@@ -5,9 +5,10 @@ body {
  html,body, #map {
      height: 100%;
      font: Helvetica, Arial,  sans-serif;
-     font-size: 1.5vh;
+     font-size: 16px;
      font-family: Helvetica, Arial, sans-serif;
      line-height: 150%;
+     color: #002e4f;
 }
 
  .leaflet-sidebar-header, .leaflet-sidebar-tabs > li.active, .leaflet-sidebar-tabs > ul > li.active {
@@ -72,6 +73,10 @@ body {
     height:64px;
     border-width:0; 
 }
+.minimap__legend,.togglebutton__p{
+    display:inline-block;
+}
+
 .info {
     padding: 6px 8px;
     font: 14px/16px Arial, Helvetica, sans-serif;

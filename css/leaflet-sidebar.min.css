@@ -10,7 +10,7 @@
 .leaflet-sidebar-left .leaflet-sidebar-tabs{left:0}
 .leaflet-sidebar-right .leaflet-sidebar-tabs{right:0}
 .leaflet-sidebar-tabs,.leaflet-sidebar-tabs>ul{position:absolute;width:40px;margin:0;padding:0;list-style-type:none}
-.leaflet-sidebar-tabs>li,.leaflet-sidebar-tabs>ul>li{width:100%;height:40px;color:#333;font-size:12pt;overflow:hidden;transition:all 80ms}
+.leaflet-sidebar-tabs>li,.leaflet-sidebar-tabs>ul>li{width:100%;height:40px;color:#002e4f;font-size:12pt;overflow:hidden;transition:all 80ms}
 .leaflet-sidebar-tabs>li:hover,.leaflet-sidebar-tabs>ul>li:hover{color:#000;background-color:#eee}
 .leaflet-sidebar-tabs>li.active,.leaflet-sidebar-tabs>ul>li.active{color:#fff;background-color:#0074d9}
 .leaflet-sidebar-tabs>li.disabled,.leaflet-sidebar-tabs>ul>li.disabled{color:rgba(51,51,51,.4)}
