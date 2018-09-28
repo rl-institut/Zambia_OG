@@ -45,43 +45,33 @@
                 </div>
             </h1>
             <p class="paragraph"> This tool was developed to support private and public actors in Zambia to quickly and accurately prioritize villages by their potential for off-grid electrification, based on information such as population density, distance to grid, solar resource and others. </p>
+            <p class="license"><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>. <br> </p>
         </div>
 
         <div class="leaflet-sidebar-pane" id="layers">
             <h1 class="leaflet-sidebar-header">Layers<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
             <h2 class="sidebar_h2">  Select Basemap Layer </h2>
-
                 <div class="minimap">
                     <img class="minimap__img" id="aerial_preview" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/6/34/36.png" onclick="SelectBasemap('Esri Aerial')" />
                     <p class="minimap__legend"> Aerial Images (Esri) </p>
                 </div>
-                <br>
                 <div class="minimap">
                     <img class="minimap__img" id="osm_preview" src="https://a.tile.openstreetmap.de/tiles/osmde/6/36/34.png" onclick="SelectBasemap('OpenStreetMap')"/>
                     <p class="minimap__legend"> OpenStreetMap </p>
                 </div>
-                <br>
                 <div class="minimap">
                     <img class="minimap__img" id="topo_preview" src="https://a.tile.opentopomap.org/6/36/34.png" onclick="SelectBasemap('OpenTopoMap')"/>
                     <p class="minimap__legend">OpenTopoMap </p>
                 </div>
-                <br>
 
-            <h2 class="sidebar_h2"> Select Raster Overlays</h2>
+
+            <h2 class="sidebar_h2"> Select Overlay Information </h2>
                 <div class="togglebutton">
                     <label class="switch">
                         <input name="" type="checkbox" onclick="toggleGHI()" id="toggle_ghi"/>
                         <span class="slider"></span>
                     </label> 
                     <p class="togglebutton__p"> Solar Irradiation</p>
-                </div>
-            <h2 class="sidebar_h2"> Select Overlay Information </h2>
-                <div class="togglebutton">
-                    <label class="switch">
-                        <input checked type="checkbox" onclick="toggleVecTileLayer()" id="toggle_vl"/>
-                        <span class="slider"></span>
-                    </label> 
-                    <p class="togglebutton__p"> Clusters</p>
                 </div>
                 <div class="togglebutton">
                     <label class="switch">
@@ -92,16 +82,25 @@
                 </div>
                 <div class="togglebutton">
                     <label class="switch">
+                        <input checked type="checkbox" onclick="toggleVecTileLayer()" id="toggle_vl"/>
+                        <span class="slider"></span>
+                    </label> 
+                    <p class="togglebutton__p"> Settlements</p>
+                </div>
+                <div class="togglebutton">
+                    <label class="switch">
                         <input checked type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Cluster Accumulations"/>
                         <span class="slider"></span>
                     </label> 
-                    <p class="togglebutton__p"> Cluster Accumulations</p>
+                    <p class="togglebutton__p"> Settlement Clusters</p>
                 </div>
                     <br>
             <h3 class="sidebar_h3">
-                <i class="fa fa-filter" style="font-size:16px"></i>Filters
+                <i class="fa fa-filter"></i>Filters
             </h3>
-            <h2 class="sidebar_h2"> Mobile Coverage</h2>
+            <p class="paragraph_filter"> Use the tools below to filter settlements and clusters based on their area, mobile coverage, distance to grid and buildings.</p>
+            <p class="justaline"/>
+            <h2 class="sidebar_h4"> Mobile Coverage</h2>
                 <div class="dropdown" id="cellcoverage">
                     <form class="dropdown__form">
                         <select class="dropdown__select" id="selectcellcoverage" onChange="cellfilter()">
@@ -111,42 +110,46 @@
                         </select>
                     </form>
                 </div>
-               <br>
-           <h2 class="sidebar_h2">Buildings</h2>
+
+           <h2 class="sidebar_h4">Buildings</h2>
                 <div class="filter">
                     <div class="filter__slider" id="sliderbuild"></div> <br>
-                    <div class="filter__input">
-                        <input type="number" id="input-with-keypress-0" name="range" />
-                        <input type="number" id="input-with-keypress-1" name="range" />
+                    <div class="filter__i">
+                        <input class="filter__input" type="number" id="input-with-keypress-0" name="range" step="1"/>
+                        <input class="filter__input"type="number" id="input-with-keypress-1" name="range" step="1"/>
                     </div>
                 </div>
 
-           <h2 class="sidebar_h2">Building Density</h2>
+
+           <h2 class="sidebar_h4">Building Density (buildings/km²)</h2>
                 <div class="filter">
                     <div class="filter__slider" id="sliderbdens"></div> <br>
-                    <div class="filter__input">
-                        <input type="number" id="input-with-keypress-2" name="range" />
-                        <input type="number" id="input-with-keypress-3" name="range" />
+                    <div class="filter__i">
+                        <input class="filter__input" type="number" id="input-with-keypress-2" name="range" />
+                        <input class="filter__input" type="number" id="input-with-keypress-3" name="range" />
                     </div>
                 </div>
 
-           <h2 class="sidebar_h2">Distance to Grid (m)</h2>
+
+           <h2 class="sidebar_h4">Distance to Grid (m)</h2>
                 <div class="filter">
                     <div class="filter__slider" id="sliderdist"></div> <br>
-                    <div class="filter__input">
-                        <input type="number" id="input-with-keypress-4" name="range" />
-                        <input type="number" id="input-with-keypress-5" name="range" />
+                    <div class="filter__i">
+                        <input class="filter__input" type="number" id="input-with-keypress-4" name="range" step="500"/>
+                        <input class="filter__input" type="number" id="input-with-keypress-5" name="range" step="500"/>
                     </div>
                 </div>
 
-           <h2 class="sidebar_h2">Area (km²)</h2>
+
+           <h2 class="sidebar_h4">Area (km²)</h2>
                 <div class="filter">
                     <div id="sliderarea"></div> <br>
-                    <div class="filter__input">
-                        <input type="number" id="input-with-keypress-6" name="range" step="0.02"/>
-                        <input type="number" id="input-with-keypress-7" name="range" step="0.02"/>
+                    <div class="filter__i">
+                        <input class="filter__input" type="number" id="input-with-keypress-6" name="range" step="0.02"/>
+                        <input class="filter__input" type="number" id="input-with-keypress-7" name="range" step="0.02"/>
                    </div>
                </div>
+               <br><br>
            </div>
 
         <div class="leaflet-sidebar-pane" id="download">
@@ -159,6 +162,7 @@
             <p class="paragraph"> Cluster shapes with metadata <a href="data/clusters.geojson" target="_blank" download >⇩download</a>.</p>
             <p class="paragraph"> Borders shapes with metadata <a href="data/provinces.geojson" target="_blank" download> ⇩download</a>.</p>
             <p class="paragraph"> Solar resource data obtained from the Global Solar Atlas, owned by the World Bank Group and provided by Solargis. Raster data for the solar irradiation layer specificly were taken from  <a href="http://globalsolaratlas.info/downloads/zambia" target="_blank">↪here</a>. Their Data are made available for reuse under CC-BY-license. A copyright notice is available <a href="http://globalsolaratlas.info/copyright" target="_blank">↪here</a>.</p>
+            <p class="license"><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>. <br> </p>
         </div>
 
         <div class="leaflet-sidebar-pane" id="about">
@@ -166,8 +170,9 @@
                  About the map
                 <div class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></div>
             </h1>
-            <p class="paragraph">Source code for this web map can be found <a href="https://github.com/rl-institut/Zambia_OG" target="_blank">here</a>.</p>
-            <p class="license"><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.</p>
+            <br>
+            <p>The source code for this web map can be found <a href="https://github.com/rl-institut/Zambia_OG" target="_blank">here</a>.</p>
+            <p class="license"><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>. <br> </p>
         </div>
 
 

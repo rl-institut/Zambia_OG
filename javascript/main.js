@@ -1,5 +1,5 @@
 var currentfilter = {
-    minbuild: 0,
+    minbuild: 100,
     maxbuild: 6000,
     minarea: 0.0,
     maxarea: 10.0,
@@ -93,6 +93,8 @@ function RefreshPreview() {
     document.getElementById("aerial_preview").src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/" + url_from_coords_yx(map.getZoom(), map.getCenter()) + ".png"
 }
 
+
+
 function SelectBasemap(input){
     var i;
     var maps = ["Esri Aerial", "OpenStreetMap", "OpenTopoMap", "Solar Irradiation"];
@@ -182,7 +184,7 @@ noUiSlider.create(buildingSlider, {
     start: [currentfilter.minbuild, currentfilter.maxbuild],
     connect: true,
     range: {
-        'min': [0, 1],
+        'min': [100, 1],
         'max': currentfilter.maxbuild
     }
 });
@@ -470,7 +472,7 @@ let options = {
     //center: [-16.2951, 26.6655],
     //zoom: 12,
     minZoom: 6,
-    maxZoom: 16,
+    maxZoom: 19,
     zoomControl: false,
     //maxBounds: [[-24, 7],[-2, 48]]
 }
@@ -510,6 +512,24 @@ let ghi = L.tileLayer("https://wam.rl-institut.de:84/data/ghi/{z}/{x}/{y}.png", 
 });   // .addTo(map) loads this as the initial basemap    ;
 
 
+var borderLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zambia-borders/{z}/{x}/{y}.pbf", {
+        rendererFactory: L.canvas.tile,
+        vectorTileLayerStyles: {
+            provinces: function(prop, zoom) {
+                return{
+                    color: "white",
+                    Opacity: 1,
+                    weight: 1,
+                    maxZoom: 19,
+                    maxNativeZoom: 15,
+                    minZoom: 5,
+                    interactive: true,
+                };
+            }
+        }
+
+}).addTo(map);
+
 
 //let vecTileLayer = L.vectorGrid.protobuf("data/temporary_tiles/{z}/{x}/{y}.pbf", {
 var vecTileLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zambia-vector/{z}/{x}/{y}.pbf", {
@@ -517,9 +537,9 @@ var vecTileLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zam
         vectorTileLayerStyles: {
             borders: function(prop, zoom) {
                 return{
-                color: "white",
-                Opacity: 1,
-                weight: 1
+                    color: "white",
+                    Opacity: 0,
+                    weight: 0
                 };
             },
             clusters: function(prop, zoom) {
@@ -538,7 +558,8 @@ var vecTileLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zam
                 };
             },
         },
-        maxZoom: 15,
+        maxZoom: 19,
+        maxNativeZoom: 15,
         minZoom: 5,
         interactive: true,
     getFeatureId: function(f) {
@@ -568,8 +589,8 @@ var vecTileLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zam
                 return this._div;
             };
             info.update = function (props) {
-                this._div.innerHTML = '<h4>Selection Detail</h4>' +
-                                      '<table>' +
+                this._div.innerHTML = '<h4 class="selection_detail_header">Selection Detail</h4>' +
+                                      '<table class="selection_detail">' +
                                       '<tr><td align="right"><b>ID</b>:</td><td>' + properties.ID + '</td></tr>' +
                                       '<tr><td align="right"><b>Province</b>:</td><td>'+properties.NAME_1+'</td></tr>' +
                                       '<tr><td align="right"><b>Buildings</b>:</td><td>'+properties.building+'</td></tr>' +
@@ -700,7 +721,7 @@ map.on("click", function() {
     });
 
 
-
+/*
 //select datasources and apply style
 let borders = L.geoJSON([provinces], {
     style: function (feature) {
@@ -723,7 +744,7 @@ borders.on("click", function (event) {
     //map.removeLayer(borders);
     //document.getElementById('Borders').checked = false;
 });
-
+*/
 
 
 
@@ -802,7 +823,7 @@ map.addControl(sidebar);
     // define and include overlaymaps
     let overlaymaps = {
                     "Clusters": vecTileLayer,
-                    "Borders": borders,
+                    "Borders": borderLayer,
                     "Centroids": circles,
                     "Cluster Accumulations": clusteracc,
                     "Solar Irradiation": ghi,
@@ -813,14 +834,6 @@ map.addControl(sidebar);
 
     map.on('zoomend', function() {
         RefreshPreview();
-        if (map.getZoom() >= 8) {
-            map.removeLayer(borders);
-            document.getElementById('Borders').checked = false;
-        }
-        if (map.getZoom() <= 8) {
-            map.addLayer(borders);
-            document.getElementById('Borders').checked = true;
-        }
     });
     map.on('moveend', function() {
         RefreshPreview();
