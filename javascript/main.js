@@ -93,7 +93,15 @@ function RefreshPreview() {
     document.getElementById("aerial_preview").src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/" + url_from_coords_yx(map.getZoom(), map.getCenter()) + ".png"
 }
 
+function hide(id) {
+    var e = document.getElementById(id);
+    e.style.display = 'none';
+}
 
+function show(id) {
+    var e = document.getElementById(id);
+    e.style.display = 'block';
+}
 
 function SelectBasemap(input){
     var i;
@@ -110,11 +118,13 @@ function SelectBasemap(input){
 function toggleGHI() {
     var checkbox = document.getElementById('toggle_ghi');
     if (checkbox.checked == false) {
+        hide("ghi_legend");
         if (map.hasLayer(ghi)) {
             map.removeLayer(ghi);
         }
     }
     else {
+        show("ghi_legend");
         map.addLayer(ghi);
     }
 }
@@ -831,6 +841,9 @@ map.addControl(sidebar);
 
     toggleVecTileLayer();
     toggleBorders();
+
+    // called on refresh to show/hide legend based on toggle-button (cache may override default settings)
+    toggleGHI();
 
     map.on('zoomend', function() {
         RefreshPreview();
