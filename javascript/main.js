@@ -861,8 +861,6 @@ map.addControl(sidebar);
 
                     }
                 }
-
-
                 </script>
 */
 
