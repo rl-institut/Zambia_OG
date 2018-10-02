@@ -858,7 +858,6 @@ map.addControl(sidebar);
                         else {
                             map.removeLayer(baseMaps[x[i].id]);
                         }
-
                     }
                 }
                 </script>
