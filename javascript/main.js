@@ -621,8 +621,6 @@ var vecTileLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zam
             currentSelection = properties.ID;
             var type = "c";
             var ID = properties.ID;
-            let public=["School","Healthcare","Water Point","Public Building"].filter(function (v,i){i++;return i==properties.SC||i==properties.HC*2||i==properties.WC*3||i==properties.PC*4}).join(",<br/>");
-            public=public||"No Data";
         } else {
             var type = "r";
             var ID = "r" + properties.ID;
@@ -731,33 +729,6 @@ map.on("click", function() {
     });
 
 
-/*
-//select datasources and apply style
-let borders = L.geoJSON([provinces], {
-    style: function (feature) {
-        return {
-            weight: 2,
-            opacity: 0.9,
-            color: '#ffffff',
-            //dashArray: '2',
-            fillOpacity: 0.1,
-            fillColor: 'ffffff'
-        };
-    },
-
-});
-
-// zooms to extent of clicked region
-// assumes that borders are a path or polygon, not a point
-borders.on("click", function (event) {
-    map.fitBounds(event.layer.getBounds());
-    //map.removeLayer(borders);
-    //document.getElementById('Borders').checked = false;
-});
-*/
-
-
-
 var clusteracc = L.markerClusterGroup({chunkedLoading: true});
 clusteracc.addLayer(circles);
 //map.addLayer(clusteracc)
@@ -805,7 +776,7 @@ var measurecontrol = L.control.measure(
     {
     //  control position
     position: 'topright',
-    //  weather to use keyboard control for this plugin
+    //  weather to use keyboard control for the measure plugin
     keyboard: true,
     //  shortcut to activate measure
     activeKeyCode: 'M'.charCodeAt(0),
@@ -825,18 +796,18 @@ map.addControl(measurecontrol);
 map.addControl(sidebar);
 
     let baseMaps = {
-            "Esri Aerial": aerial,
-            "OpenStreetMap": osm,
-            "OpenTopoMap": topo,
+        "Esri Aerial": aerial,
+        "OpenStreetMap": osm,
+        "OpenTopoMap": topo,
     };
 
     // define and include overlaymaps
     let overlaymaps = {
-                    "Clusters": vecTileLayer,
-                    "Borders": borderLayer,
-                    "Centroids": circles,
-                    "Cluster Accumulations": clusteracc,
-                    "Solar Irradiation": ghi,
+        "Clusters": vecTileLayer,
+        "Borders": borderLayer,
+        "Centroids": circles,
+        "Cluster Accumulations": clusteracc,
+        "Solar Irradiation": ghi,
     };
 
     toggleVecTileLayer();
