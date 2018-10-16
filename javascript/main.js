@@ -3,7 +3,7 @@ var currentfilter = {
     maxbuild: 6000,
     minarea: 0.0,
     maxarea: 10.0,
-    minbdens: 0,
+    minbdens: 160,
     maxbdens: 3000,
     mindist: 0,
     maxdist: 241000,
@@ -105,7 +105,7 @@ function show(id) {
 
 function SelectBasemap(input){
     var i;
-    var maps = ["Esri Aerial", "OpenStreetMap", "OpenTopoMap", "Solar Irradiation"];
+    var maps = ["Esri Aerial", "OpenStreetMap", "OpenTopoMap", "GHI"];
     for (i = 0; i < maps.length; i++){
         if (map.hasLayer(baseMaps[maps[i]]) && maps[i] != input) {
                 map.removeLayer(baseMaps[maps[i]]);
@@ -116,7 +116,7 @@ function SelectBasemap(input){
 }
 
 function toggleGHI() {
-    var checkbox = document.getElementById('toggle_ghi');
+    var checkbox = document.getElementById('GHI');
     if (checkbox.checked == false) {
         hide("ghi_legend");
         if (map.hasLayer(ghi)) {
@@ -126,6 +126,21 @@ function toggleGHI() {
     else {
         show("ghi_legend");
         map.addLayer(ghi);
+    }
+}
+
+function toggleEGrid() {
+    var checkbox = document.getElementById('EGrid');
+    if (checkbox.checked == false) {
+        hide("grid_legend");
+        if (map.hasLayer(gridLayer)) {
+            map.removeLayer(gridLayer);
+        }
+    }
+    else {
+        show("grid_legend");
+        map.addLayer(gridLayer);
+        //alert("show getan?")
     }
 }
 
@@ -141,11 +156,13 @@ function toggleVecTileLayer() {
     }
 }
 
-function toggleBorders(){
+function toggleOverlay(){
     var checkboxes = document.getElementsByName('togglebutton');
     var j;
     for (j = 0; j < checkboxes.length; j++) {
         //alert(typeof(checkboxes[j].id));
+        //alert(checkboxes[j].id);
+
         if (checkboxes[j].checked == false){
             //alert(typeof(gray));
             map.removeLayer(overlaymaps[checkboxes[j].id]);
@@ -153,6 +170,19 @@ function toggleBorders(){
         else {
             map.addLayer(overlaymaps[checkboxes[j].id]);
         }
+    }
+}
+
+function toggleTSites() {
+    var checkbox = document.getElementById('TSites');
+    if (checkbox.checked == false) {
+        if (map.hasLayer(tourismSitesLayer)) {
+            map.removeLayer(tourismSitesLayer);
+        }
+    }
+    else {
+        map.addLayer(tourismSitesLayer);
+        //alert("show getan?")
     }
 }
 
@@ -195,6 +225,7 @@ noUiSlider.create(buildingSlider, {
     connect: true,
     range: {
         'min': [100, 1],
+        '10%': [300, 100],
         'max': currentfilter.maxbuild
     }
 });
@@ -222,7 +253,7 @@ noUiSlider.create(bdensitySlider, {
     start: [currentfilter.minbdens, currentfilter.maxbdens],
     connect: true,
     range: {
-        'min': [0, 1],
+        'min': [160, 10],
         'max': currentfilter.maxbdens
     }
 });
@@ -519,7 +550,7 @@ let ghi = L.tileLayer("https://wam.rl-institut.de:84/data/ghi/{z}/{x}/{y}.png", 
     maxZoom: 19,
     maxNativeZoom: 12,
     attribution: '&copy; <a href="www.http://globalsolaratlas.info/">Global Solar Atlas</a>'
-});   // .addTo(map) loads this as the initial basemap    ;
+});
 
 
 var borderLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zambia-borders/{z}/{x}/{y}.pbf", {
@@ -531,7 +562,7 @@ var borderLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zamb
                     Opacity: 1,
                     weight: 1,
                     maxZoom: 19,
-                    maxNativeZoom: 15,
+                    maxNativeZoom: 17,
                     minZoom: 5,
                     interactive: true,
                 };
@@ -539,6 +570,51 @@ var borderLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zamb
         }
 
 }).addTo(map);
+
+var gridLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zambia-grid/{z}/{x}/{y}.pbf", {
+        rendererFactory: L.canvas.tile,
+        vectorTileLayerStyles: {
+            grid: function(prop, zoom) {
+                if (prop.STATUS == "Existing") {
+                    gridcolor = "#e45e47";
+                } else {
+                    gridcolor = "#f2b44a";
+                }
+                return{
+                    color: gridcolor,
+                    Opacity: 0.45,
+                    weight: 1.2,
+                    maxZoom: 19,
+                    maxNativeZoom: 17,
+                    minZoom: 5,
+                    interactive: false,
+                    smoothFactor: 5,
+                };
+            }
+        }
+
+})
+
+var farmBlocksLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zambia-farm-blocks/{z}/{x}/{y}.pbf", {
+        rendererFactory: L.canvas.tile,
+        vectorTileLayerStyles: {
+            farm_blocks: function(prop, zoom) {
+                return{
+                    opacity: 1,
+                    color: "black",
+                    fill: true,
+                    fillOpacity: 0.7,
+                    fillColor: "#cfac21",
+                    weight: 1,
+                    maxZoom: 19,
+                    maxNativeZoom: 15,
+                    minZoom: 5,
+                    interactive: false
+                };
+            }
+        }
+
+})
 
 
 //let vecTileLayer = L.vectorGrid.protobuf("data/temporary_tiles/{z}/{x}/{y}.pbf", {
@@ -591,7 +667,10 @@ var vecTileLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zam
         if (properties.ID !== undefined) {
             var bbox = (properties.bb_south + ',' + properties.bb_west + ',' + properties.bb_north + ',' + properties.bb_east);
             downloadstring =('http://overpass-api.de/api/interpreter?data=(node[building](' + bbox + ');way[building](' + bbox + '););(._;>;);out meta;');
-            // disableClickPropagation enables selecting and copying of text in control element
+            
+            var mobileCoverageText = "unknown"
+            if (properties.mobile_cov == 1) { mobileCoverageText = "yes"}
+
             info.onAdd = function (map) {
                 this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
                 this.update();
@@ -605,10 +684,12 @@ var vecTileLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zam
                                       '<tr><td align="right"><b>Province</b>:</td><td>'+properties.NAME_1+'</td></tr>' +
                                       '<tr><td align="right"><b>Buildings</b>:</td><td>'+properties.building+'</td></tr>' +
                                       '<tr><td align="right"><b>Area</b>:</td><td>'+properties.area_km2 + ' km²' + '</td></tr>' +
-                                      '<tr><td align="right"><b>Density</b>:</td><td>'+properties.buid_dens+'</td></tr>' +
-                                      '<tr><td align="right"><b>Distance to Grid</b>:</td><td>'+Math.round(properties.distance) + ' m' + '</td></tr>' +
-                                      '<tr><td align="right"><b>Priority Class</b>:</td><td>'+properties.prio_class+'</td></tr>' +
+                                      '<tr><td align="right"><b>Density</b>:</td><td>'+Math.round(properties.buid_dens)+'</td></tr>' +
+                                      '<tr><td align="right"><b>Distance to Grid</b>:</td><td>'+Math.round(properties.distance / 1000) + ' km' + '</td></tr>' +
+                                      '<tr><td align="right"><b>Mobile Coverage</b>:</td><td>'+ mobileCoverageText +'</td></tr>' +
+                                      '<tr><td align="right"><b>Number of Schools</b>:</td><td>' + properties.numschool + '</td></tr>' +
                                       '<tr><td align="right"><b>Download Buildings</b>:</td><td>' + '<a href="' + downloadstring + '" > Link<a/>' +'</td></tr>' +
+                                      '<tr><td align="right"><b>Priority Class</b>:</td><td>'+properties.prio_class+'</td></tr>' +
                                       '</table>';
                 this._div.innerHTML
             };
@@ -680,7 +761,7 @@ vecTileLayer.filter = function(filter) {
                     (prop.buid_dens >= currentfilter.minbdens && prop.buid_dens <= currentfilter.maxbdens) &&
                     (prop.distance >= currentfilter.mindist && prop.distance <= currentfilter.maxdist) &&
                     (prop.area_km2 >= currentfilter.minarea && prop.area_km2 <= currentfilter.maxarea) &&
-                    ((currentfilter.mobile != "nofilter" && currentfilter.mobile != prop.mobile_cov) || currentfilter.mobile == "nofilter" )
+                    ((currentfilter.mobile != "nofilter" && currentfilter.mobile == prop.mobile_cov) || currentfilter.mobile == "nofilter" )
             )
             {
                 this.setFeatureStyle(prop.ID, normalStyle);
@@ -708,6 +789,26 @@ map.on("click", function() {
     vecTileLayer.clearHighlight();
 });
 
+
+
+    var tourismSitesLayer = L.geoJSON([tsites], {
+        style: function (feature) {
+            return feature.properties && feature.properties.style;
+        },
+            pointToLayer: function (feature, latlng) {
+                return L.circleMarker(latlng, {
+                    radius: 4,
+                    fillColor: "#81c3d7",
+                    color: "black",
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 1,
+                    interactive: false,
+                });
+            }
+    })
+
+
     //select datasources and apply style
     var circles = L.geoJSON([centroids], {
         style: function (feature) {
@@ -718,18 +819,18 @@ map.on("click", function() {
 
             pointToLayer: function (feature, latlng) {
                 return L.circleMarker(latlng, {
-                    radius: 8,
+                    radius: 0,
                     fillColor: "#ff7800",
                     color: "#000",
                     weight: 1,
-                    opacity: 1,
-                    fillOpacity: 0.8,
+                    opacity: 0,
+                    fillOpacity: 0,
                 });
             }
     });
 
 
-var clusteracc = L.markerClusterGroup({chunkedLoading: true});
+var clusteracc = L.markerClusterGroup({chunkedLoading: true, spiderfyOnMaxZoom: false});
 clusteracc.addLayer(circles);
 //map.addLayer(clusteracc)
 
@@ -748,12 +849,12 @@ clusteracc.filter = function(filter, map) {
             {
             let info = point.properties.building;
             let orange =  L.circleMarker([point.properties.lon, point.properties.lat], {
-                           radius: 8,
+                           radius: 0,
                            fillColor: "#ff7800",
                            color: "#000",
                            weight: 1,
-                           opacity: 1,
-                           fillOpacity: 0.8,
+                           opacity: 0,
+                           fillOpacity: 0,
                 });
             markerList.push(orange);
         }
@@ -807,14 +908,20 @@ map.addControl(sidebar);
         "Borders": borderLayer,
         "Centroids": circles,
         "Cluster Accumulations": clusteracc,
-        "Solar Irradiation": ghi,
+        "GHI": ghi,
+        "EGrid": gridLayer,
+        "TSites": tourismSitesLayer,
+        "FBlocks": farmBlocksLayer
+
     };
 
     toggleVecTileLayer();
-    toggleBorders();
-
+    toggleOverlay();
     // called on refresh to show/hide legend based on toggle-button (cache may override default settings)
+
     toggleGHI();
+    toggleEGrid();
+   
 
     map.on('zoomend', function() {
         RefreshPreview();
@@ -826,7 +933,10 @@ map.addControl(sidebar);
         map.fireEvent("mapmove", currentfilter);
     });
 
-    map.on("layeradd",function (){vecTileLayer.bringToFront();});
+    map.on("layeradd",function(){
+        vecTileLayer.bringToFront();
+        }
+    );
 
     map.addEventListener("filterchange", function(filter) {
         vecTileLayer.filter(currentfilter);

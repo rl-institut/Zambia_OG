@@ -69,7 +69,7 @@
             <h2 class="sidebar_h2"> Select Overlay Information </h2>
                 <div class="togglebutton">
                     <label class="switch">
-                        <input name="" type="checkbox" onclick="toggleGHI()" id="toggle_ghi"/>
+                        <input name="" type="checkbox" onclick="toggleGHI()" id="GHI"/>
                         <span class="slider"></span>
                     </label> 
                     <p class="togglebutton__p"> Solar Irradiation</p>
@@ -94,7 +94,7 @@
 
                 <div class="togglebutton">
                     <label class="switch">
-                        <input type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Borders"/>
+                        <input checked type="checkbox" name="togglebutton" onclick="toggleOverlay()" id="Borders"/>
                         <span class="slider"></span>
                     </label> 
                     <p class="togglebutton__p"> Borders</p>
@@ -108,10 +108,37 @@
                 </div>
                 <div class="togglebutton">
                     <label class="switch">
-                        <input checked type="checkbox" name="togglebutton" onclick="toggleBorders()" id="Cluster Accumulations"/>
+                        <input checked type="checkbox" name="togglebutton" onclick="toggleOverlay()" id="Cluster Accumulations"/>
                         <span class="slider"></span>
                     </label> 
                     <p class="togglebutton__p"> Settlement Clusters</p>
+                </div>
+                <div class="togglebutton">
+                    <label class="switch">
+                        <input type="checkbox" name="" onclick="toggleEGrid()" id="EGrid"/>
+                        <span class="slider"></span>
+                    </label> 
+                    <p class="togglebutton__p"> Electricity Grid</p>
+                </div>
+                    <div class="legend" id="grid_legend">
+                        <img class="legend__img" id="1" src="data/legend/electricityGridExisting.png" />
+                        <p class="legend__text"> existing </p> <br>
+                        <img class="legend__img" id="2" src="data/legend/electricityGridPlanned.png" />
+                        <p class="legend__text"> planned </p> <br>
+                     </div>
+                <div class="togglebutton">
+                    <label class="switch">
+                        <input type="checkbox" name="" onclick="toggleTSites()" id="TSites"/>
+                        <span class="slider"></span>
+                    </label> 
+                    <p class="togglebutton__p"> Tourism Sites</p>
+                </div>
+                <div class="togglebutton">
+                    <label class="switch">
+                        <input type="checkbox" name="togglebutton" onclick="toggleOverlay()" id="FBlocks"/>
+                        <span class="slider"></span>
+                    </label> 
+                    <p class="togglebutton__p"> Farm Blocks</p>
                 </div>
                     <br>
             <h3 class="sidebar_h3">
@@ -126,6 +153,16 @@
                             <option value="nofilter">Show all</option>
                             <option value= "1"> ✓ Has Mobile Coverage</option>
                             <option value= "0"> ✕ No Info on Mobile Coverage</option>
+                        </select>
+                    </form>
+                </div>
+            <h2 class="sidebar_h4"> Surveyed</h2>
+                <div class="dropdown" id="cellcoverage">
+                    <form class="dropdown__form">
+                        <select class="dropdown__select" id="selectifsurveyed" onChange="surveyfilter()">
+                            <option value="nofilter">Filter not implemented yet</option>
+                            <option value= "1"> ✓ Yes</option>
+                            <option value= "0"> ✕ No</option>
                         </select>
                     </form>
                 </div>
@@ -144,8 +181,8 @@
                 <div class="filter">
                     <div class="filter__slider" id="sliderbdens"></div> <br>
                     <div class="filter__i">
-                        <input class="filter__input" type="number" id="input-with-keypress-2" name="range" />
-                        <input class="filter__input" type="number" id="input-with-keypress-3" name="range" />
+                        <input class="filter__input" type="number" id="input-with-keypress-2" name="range" step="10"/>
+                        <input class="filter__input" type="number" id="input-with-keypress-3" name="range" step="10"/>
                     </div>
                 </div>
 
@@ -221,6 +258,8 @@
     <!--importing js-files with geojson inside. this approach is chosen, since loading geojson-files directly into a variable can be problematic  -->
     <!--variable centroids with points for all clusters -->
     <script src="data/centroids.js" type="text/javascript"></script>
+    <!--variable tsites with points for all clusters -->
+    <script src="data/tourism_sites.js" type="text/javascript"></script>
     <!--provinces.js contains a javascript variable named "provinces" with all geojson objects inside -->
     <script src="data/sampledata_provinces.js" type="text/javascript"></script>
     <!--nouislider enables better looking checkboxes and more functional sliders -->
