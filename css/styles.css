@@ -192,3 +192,7 @@ p {
     padding: 0px 7px 0px 60px; /* top, right, bottom, left*/
 }
 
+.hideme{
+    display:none;
+}
+
