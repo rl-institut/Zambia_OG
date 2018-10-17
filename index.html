@@ -67,6 +67,71 @@
 
 
             <h2 class="sidebar_h2"> Select Overlay Information </h2>
+
+                <div class="togglebutton">
+                    <label class="switch">
+                        <input checked type="checkbox" onclick="toggleVecTileLayer()" id="toggle_vl"/>
+                        <span class="slider"></span>
+                    </label> 
+                    <p class="togglebutton__p"> Settlements</p>
+                </div>
+
+                <div class="togglebutton">
+                    <label class="switch">
+                        <input checked type="checkbox" name="togglebutton" onclick="toggleOverlay()" id="Cluster Accumulations"/>
+                        <span class="slider"></span>
+                    </label> 
+                    <p class="togglebutton__p"> Settlement Clusters</p>
+                </div>
+
+            <p class="justaline"/>
+
+                <div class="togglebutton">
+                    <label class="switch">
+                        <input checked type="checkbox" name="togglebutton" onclick="toggleOverlay()" id="Borders"/>
+                        <span class="slider"></span>
+                    </label> 
+                    <p class="togglebutton__p"> Borders</p>
+                </div>
+                <div class="togglebutton">
+                    <label class="switch">
+                        <input type="checkbox" name="" onclick="toggleEGrid()" id="EGrid"/>
+                        <span class="slider"></span>
+                    </label> 
+                    <p class="togglebutton__p"> Electricity Grid</p>
+                </div>
+
+                    <div class="legend" id="grid_legend">
+                        <img class="legend__img" id="1" src="data/legend/electricityGridExisting.png" />
+                        <p class="legend__text"> Power line </p> <br>
+                     </div>
+
+                <div class="togglebutton">
+                    <label class="switch">
+                        <input type="checkbox" name="legendary" onclick="toggleOverlay()" id="FBlocks"/>
+                        <span class="slider"></span>
+                    </label> 
+                    <p class="togglebutton__p"> Farm Blocks</p>
+                </div>
+                    <div class="legend" id="FBlocks_Legend">
+                        <img class="legend__img" id="1" src="data/legend/farm_block.png" />
+                        <p class="legend__text"> Farm Block </p> <br>
+                     </div>
+
+                <div class="togglebutton">
+                    <label class="switch">
+                        <input type="checkbox" name="legendary" onclick="toggleOverlay()" id="TSites"/>
+                        <span class="slider"></span>
+                    </label> 
+                    <p class="togglebutton__p"> Tourism Sites</p>
+                </div>
+
+                    <div class="legend" id="TSites_Legend">
+                        <img class="legend__img" id="1" src="data/legend/tourism_point.png" />
+                        <p class="legend__text"> Tourist Site </p> <br>
+                     </div>
+
+
                 <div class="togglebutton">
                     <label class="switch">
                         <input name="" type="checkbox" onclick="toggleGHI()" id="GHI"/>
@@ -92,54 +157,6 @@
                         <p class="legend__text"> >= 6.1 </p>
                     </div>
 
-                <div class="togglebutton">
-                    <label class="switch">
-                        <input checked type="checkbox" name="togglebutton" onclick="toggleOverlay()" id="Borders"/>
-                        <span class="slider"></span>
-                    </label> 
-                    <p class="togglebutton__p"> Borders</p>
-                </div>
-                <div class="togglebutton">
-                    <label class="switch">
-                        <input checked type="checkbox" onclick="toggleVecTileLayer()" id="toggle_vl"/>
-                        <span class="slider"></span>
-                    </label> 
-                    <p class="togglebutton__p"> Settlements</p>
-                </div>
-                <div class="togglebutton">
-                    <label class="switch">
-                        <input checked type="checkbox" name="togglebutton" onclick="toggleOverlay()" id="Cluster Accumulations"/>
-                        <span class="slider"></span>
-                    </label> 
-                    <p class="togglebutton__p"> Settlement Clusters</p>
-                </div>
-                <div class="togglebutton">
-                    <label class="switch">
-                        <input type="checkbox" name="" onclick="toggleEGrid()" id="EGrid"/>
-                        <span class="slider"></span>
-                    </label> 
-                    <p class="togglebutton__p"> Electricity Grid</p>
-                </div>
-                    <div class="legend" id="grid_legend">
-                        <img class="legend__img" id="1" src="data/legend/electricityGridExisting.png" />
-                        <p class="legend__text"> existing </p> <br>
-                        <img class="legend__img" id="2" src="data/legend/electricityGridPlanned.png" />
-                        <p class="legend__text"> planned </p> <br>
-                     </div>
-                <div class="togglebutton">
-                    <label class="switch">
-                        <input type="checkbox" name="" onclick="toggleTSites()" id="TSites"/>
-                        <span class="slider"></span>
-                    </label> 
-                    <p class="togglebutton__p"> Tourism Sites</p>
-                </div>
-                <div class="togglebutton">
-                    <label class="switch">
-                        <input type="checkbox" name="togglebutton" onclick="toggleOverlay()" id="FBlocks"/>
-                        <span class="slider"></span>
-                    </label> 
-                    <p class="togglebutton__p"> Farm Blocks</p>
-                </div>
                     <br>
             <h3 class="sidebar_h3">
                 <i class="fa fa-filter"></i>Filters
@@ -172,7 +189,7 @@
                     <div class="filter__slider" id="sliderbuild"></div> <br>
                     <div class="filter__i">
                         <input class="filter__input" type="number" id="input-with-keypress-0" name="range" step="1"/>
-                        <input class="filter__input"type="number" id="input-with-keypress-1" name="range" step="1"/>
+                        <input class="filter__input"type="number" id="input-with-keypress-1" name="range" step="100"/>
                     </div>
                 </div>
 
@@ -216,7 +233,7 @@
             <p class="paragraph"> You may download the data behind this map:</p>
             <p class="paragraph"> Cluster points with metadata <a class="link"href="data/centroids.geojson" target="_blank" download> ⇩download</a>.</p>
             <p class="paragraph"> Cluster shapes with metadata <a class="link"href="data/clusters.geojson" target="_blank" download >⇩download</a>.</p>
-            <p class="paragraph"> Borders shapes with metadata <a class="link"href="data/provinces.geojson" target="_blank" download> ⇩download</a>.</p>
+            <p class="paragraph"> Border shapes <a class="link"href="data/provinces.geojson" target="_blank" download> (⇩download) </a> and grid lines <a class="link"href="data/grid.geojson" target="_blank" download> (⇩download) </a> were taken from OpenStreetMap and are licensed under the <a class="link"href="https://wiki.osmfoundation.org/wiki/Licence" target="_blank" > Open Database License</a>.</p>
             <p class="paragraph"> Solar resource data obtained from the Global Solar Atlas, owned by the World Bank Group and provided by Solargis. Raster data for the solar irradiation layer specificly were taken from  <a class="link"href="http://globalsolaratlas.info/downloads/zambia" target="_blank">↪here</a>. Their Data are made available for reuse under CC-BY-license. A copyright notice is available <a class="link"href="http://globalsolaratlas.info/copyright" target="_blank">↪here</a>.</p>
             <p class="license"><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a class="link"rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>. <br> </p>
         </div>

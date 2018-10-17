@@ -156,13 +156,25 @@ function toggleVecTileLayer() {
     }
 }
 
+function toggleLegend(){
+    var checkboxes = document.getElementsByName('legendary');
+    var k;
+    for (k = 0; k < checkboxes.length; k++) {
+        if (checkboxes[k].checked == false){
+            hide(checkboxes[k].id + "_Legend");
+        }
+        else {
+            show(checkboxes[k].id + "_Legend");
+        }
+    }
+}
+
 function toggleOverlay(){
     var checkboxes = document.getElementsByName('togglebutton');
+    var checkboxes_with_legends = document.getElementsByName('legendary');
     var j;
     for (j = 0; j < checkboxes.length; j++) {
-        //alert(typeof(checkboxes[j].id));
         //alert(checkboxes[j].id);
-
         if (checkboxes[j].checked == false){
             //alert(typeof(gray));
             map.removeLayer(overlaymaps[checkboxes[j].id]);
@@ -171,6 +183,15 @@ function toggleOverlay(){
             map.addLayer(overlaymaps[checkboxes[j].id]);
         }
     }
+    for (k = 0; k < checkboxes_with_legends.length; k++) {
+        if (checkboxes_with_legends[k].checked == false){
+            map.removeLayer(overlaymaps[checkboxes_with_legends[k].id]);
+        }
+        else {
+            map.addLayer(overlaymaps[checkboxes_with_legends[k].id]);
+        }
+    }
+    toggleLegend();
 }
 
 function toggleTSites() {
@@ -575,13 +596,8 @@ var gridLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zambia
         rendererFactory: L.canvas.tile,
         vectorTileLayerStyles: {
             grid: function(prop, zoom) {
-                if (prop.STATUS == "Existing") {
-                    gridcolor = "#e45e47";
-                } else {
-                    gridcolor = "#f2b44a";
-                }
                 return{
-                    color: gridcolor,
+                    color: "#e45e47",
                     Opacity: 0.45,
                     weight: 1.2,
                     maxZoom: 19,
