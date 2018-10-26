@@ -634,7 +634,8 @@ var farmBlocksLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/
 
 
 //let vecTileLayer = L.vectorGrid.protobuf("data/temporary_tiles/{z}/{x}/{y}.pbf", {
-var vecTileLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zambia-vector/{z}/{x}/{y}.pbf", {
+//var vecTileLayer = L.vectorGrid.protobuf("https://wam.rl-institut.de:84/data/zambia-vector/{z}/{x}/{y}.pbf", {
+var vecTileLayer = L.vectorGrid.protobuf("", {
         rendererFactory: L.canvas.tile,
         vectorTileLayerStyles: {
             borders: function(prop, zoom) {
